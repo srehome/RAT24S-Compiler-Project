@@ -53,6 +53,21 @@ int lexer(string filename, std::vector<pair<string, string>> &tokens) {
 
         if(mychar == '['){
             //code to skip comments
+            if(codefile.get() == '*'){  //if next char is '*', it is the start of a comment
+                //find end of comment or end of file
+                while(codefile.is_open()) {
+                    //check if charcter starts end comment symbol
+                    if(codefile.get() == '*'){
+                        if(codefile.get() == ']'){          //check if complete end comment symbol
+                            break;                  //if comment ended, break out of read loop
+                        }
+                    }
+                }
+            }
+            else {              //else not start of comment, it's just illegal
+                codefile.unget();       //go back to '['
+                tokens.push_back(make_pair(string(1, mychar), "illegal"));
+            }
         }
         else if(letters.find_first_of(tolower(mychar)) != string::npos){   //begin LA
             ID_FSM(mychar, codefile, tokens);
