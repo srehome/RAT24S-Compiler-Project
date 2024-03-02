@@ -6,12 +6,18 @@
 
 using namespace std;
 
-string letters = "abcdefghijklmnopqrstuvwxyz"; //if(letters.find_first_of(mychar) != string::npos) then it is a letter
-string digits = "0123456789"; //if(digits.find_first_of(mychar) != string::npos) then it is a digit
+//Lists of characters/words for lexer to compare current character/token with
+string letters = "abcdefghijklmnopqrstuvwxyz";
+string digits = "0123456789";
 string separators = "$,;{}()";
-string operators = "+-*/=<>!"; //Operator List: + - * / == != <= => 
+string operators = "+-*/=<>!"; //Operator List: + - * / = == != <= => 
 unordered_set<string> keywords{"function", "integer", "boolean", "real", "if", "endif", "else",
                                 "return", "print", "scan", "while", "endwhile", "true", "false"};
+
+//Function Declarations
+string ID_FSM(char, ifstream&);
+pair<string, string> INT_REAL_DFSM(char, ifstream&);
+int lexer(string, vector<pair<string, string>>&);
 
 //hardcde id DFSM 2D array
 int idDFSM[6][3] = {
@@ -38,10 +44,6 @@ int realDFSM[5][2] = {
     { 5, 4 }
 };
 
-//Prototyping Functions
-string ID_FSM(char, ifstream&);
-pair<string, string> INT_REAL_DFSM(char, ifstream&);
-
 /*  Helpful Code  */
 /*
     isspace(mychar)   --  checks if character is whitespace (space, tab, newline, etc)
@@ -61,59 +63,70 @@ pair<string, string> INT_REAL_DFSM(char, ifstream&);
             cout << pair.first << ": " << pair.second << endl;
         }
 */
-int lexer(string filename, std::vector<pair<string, string>> &tokens) {
+//Lexical Analyzer function
+int lexer(string filename, vector<pair<string, string>> &tokens) {
+    //Open the file and create a variable to keep track of current character
     ifstream codefile (filename);
     char mychar;
 
+    //while the file is not at the end, parse tokens, identify them, and add them to the vector
     while( codefile.is_open() && !codefile.eof() ) {
+        //get next character in file
         mychar = codefile.get();
 
-        if(mychar == '['){
-            //code to skip comments
+        if(mychar == '['){  //code to skip comments
             if(codefile.get() == '*'){  //if next char is '*', it is the start of a comment
-                //find end of comment or end of file
-                while(codefile.is_open() && !codefile.eof()) {
+                //find the end of the comment or the end of the file
+                while(!codefile.eof()) {
                     //check if charcter starts end comment symbol
                     if(codefile.get() == '*'){
-                        if(codefile.get() == ']'){          //check if complete end comment symbol
-                            break;                  //if comment ended, break out of read loop
+                        if(!codefile.eof()){            //if still not end of file
+                            if(codefile.get() == ']'){  //check if complete end comment symbol
+                                break;                  //if comment ended, break out of reading comment loop
+                            }
                         }
                     }
                 }
             }
             else {              //else not start of comment, it's just illegal
                 codefile.unget();       //go back to '['
-                tokens.push_back(make_pair(string(1, mychar), "illegal"));
+                tokens.push_back(make_pair(string(1, mychar), "illegal"));  //add '[' to list of token as illegal
             }
         }
-        else if(letters.find_first_of(tolower(mychar)) != string::npos){   //begin LA
-            string token = ID_FSM(mychar, codefile);
-            string lexeme = keywords.find(token) != keywords.end() ? "keyword" : "identifier";
-            tokens.push_back(make_pair(token, lexeme));
+        //check if character is in letters string
+        else if(letters.find_first_of(tolower(mychar)) != string::npos){
+            string token = ID_FSM(mychar, codefile);    //call id fsm to read in and return full token
+            string lexeme = keywords.find(token) != keywords.end() ? "keyword" : "identifier";  //if found in keywords, lexeme set to keyword, else identifier
+            tokens.push_back(make_pair(token, lexeme)); //add id/keyowrd to list of tokens
         }
+        //check if character is in digits string
         else if(digits.find_first_of(mychar) != string::npos) {
-            tokens.push_back(INT_REAL_DFSM(mychar, codefile));
+            tokens.push_back(INT_REAL_DFSM(mychar, codefile));  //add int/real to list of tokens
         }
+        //check if character is in separators string
         else if(separators.find_first_of(mychar) != string::npos) {
-            tokens.push_back(make_pair(string(1, mychar), "separator"));
+            tokens.push_back(make_pair(string(1, mychar), "separator"));    //add separator to list of tokens
         }
+        //check if character is in operators string
         else if(operators.find_first_of(mychar) != string::npos) {
-            tokens.push_back(make_pair(string(1, mychar), "operator"));
-            char tempOp = codefile.get(); //Scan next to store into temporary value
-            // == => != <=
+            char tempOp = codefile.get(); //Scan next character & store into temporary value
+            //check for == => != <= operators
             if (((mychar == '=') && (tempOp == '=' || tempOp == '>')) ||
                 ((mychar == '!') && (tempOp == '=')) ||
                 ((mychar == '<') && (tempOp == '='))) {
-                tokens.push_back(make_pair(string(1, mychar) + string(1, tempOp), "operator"));
+                    //add concatenated operator to list of tokens
+                    tokens.push_back(make_pair(string(1, mychar) + string(1, tempOp), "operator"));
             }
-            else {
+            else { //add simple operator to list of tokens
                 codefile.unget();
                 tokens.push_back(make_pair(string(1, mychar), "operator"));
             }
         }
+        //check if character is whitespace
         else if(isspace(mychar)){
-            //do nothing to skip
+            //do nothing to skip whitespace
         }
+        //if character is not recognized above, add to list of tokens as an illegal
         else {
             tokens.push_back(make_pair(string(1, mychar), "illegal"));
         }
@@ -126,24 +139,26 @@ string ID_FSM(char mychar, ifstream &codefile) {
     string token = string(1, mychar);
 
     while (true){
-        if(letters.find_first_of(tolower(mychar)) != string::npos){ //if letter
+        if(letters.find_first_of(tolower(mychar)) != string::npos){ //if character in letters string
             state = idDFSM[state - 1][0];
             token.push_back(mychar);
         }
-        else if(digits.find_first_of(mychar) != string::npos){      //if digit
+        else if(digits.find_first_of(mychar) != string::npos){      //if character in digits string
             state = idDFSM[state - 1][1];
             token.push_back(mychar);
         }
-        else if(mychar == '-'){                                     //if -
+        else if(mychar == '_'){                                     //if character is '_'
             state = idDFSM[state - 1][2];
             token.push_back(mychar);
         }
-        else {                                                      //else break bc invalid symbol
+        else {                                                      //else break because invalid symbol
             break;
         }
 
-        //add code to check if end of file
-        mychar = codefile.get();
+        //check if end of file
+        if(!codefile.eof())
+            mychar = codefile.get();
+        else break;
     }
     
     //if current character isn't whitespace, move file pointer back 1
@@ -152,7 +167,7 @@ string ID_FSM(char mychar, ifstream &codefile) {
 
     //check if accepting state
     if(state == 2 || state == 3 || state == 4 || state == 5)
-        return token;   //should I change the FSM to return token string???
+        return token;
     else return "";
 }
 
@@ -162,7 +177,7 @@ string integerFSM(char mychar, ifstream &codefile) {
     string token = "";
 
     while (true){
-        if(digits.find_first_of(mychar) != string::npos) { //if digit
+        if(digits.find_first_of(mychar) != string::npos) { //if character in digits string
             state = idDFSM[state - 1][0];
             token.push_back(mychar);
         }
@@ -225,36 +240,38 @@ pair<string, string> INT_REAL_DFSM(char mychar, ifstream& codefile)
     string token = string(1, mychar);
 
     while (true) {
-    if (digits.find_first_of(mychar) != string::npos) {      //if digit
+    if (digits.find_first_of(mychar) != string::npos) {      //if character is in digits string
             state = idDFSM[state - 1][0];
             token.push_back(mychar);
         }
-        else if (mychar == '.') {
-            if (idDFSM[state - 1][1] == 5) {   //if new state would be 5, meaning we already have a '.'
-                codefile.unget();
-                break;
+        else if (mychar == '.') {               //if character is '.'
+            if (idDFSM[state - 1][1] == 5) {    //if new state would be 5, meaning we already have a '.'
+                codefile.unget();               //unget second '.'
+                break;                          //break because int/real token is done
             }
 
-            state = idDFSM[state - 1][1];
+            state = idDFSM[state - 1][1];       //else change state & add '.' character
             token.push_back(mychar);
         }
-        else {                                                      //else break bc invalid symbol
+        else {                                 //else break because invalid symbol
             break;
         }
 
         //add code to check if end of file
-        mychar = codefile.get();
+        if(!codefile.eof())
+            mychar = codefile.get();
+        else break;
     }
 
     //if current character isn't whitespace, move file pointer back 1
     if (!isspace(mychar))
         codefile.unget();
 
-    //if state 3, meaning ends with '.', unget '.', set state to int
+    //if state 3, meaning ends with '.', unget '.', & set state to int acceptance state
     if(state == 3){
         if (isspace(mychar))        //if pointing to whitespace, unget
             codefile.unget();
-        codefile.unget();           //pointing to '.', unget
+        codefile.unget();           //currently pointing to '.', unget
         token.pop_back();           //pop '.' off the end of the token string
         state = 2;                  //set state to accepting int
     }
