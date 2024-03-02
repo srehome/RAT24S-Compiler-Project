@@ -24,6 +24,10 @@ int idDFSM[6][3] = {
 };
 
 //hardcode int DFSM 2D array
+int intDFSM[2][2] = {
+    { 1, 2 },
+    { 1, 2 }
+};
 
 //hardcode real DFSM 2D array
 int realDFSM[5][2] = {
@@ -33,6 +37,10 @@ int realDFSM[5][2] = {
     { 4, 5 },
     { 5, 4 }
 };
+
+//Prototyping Functions
+string ID_FSM(char, ifstream&);
+pair<string, string> INT_REAL_DFSM(char, ifstream&);
 
 /*  Helpful Code  */
 /*
@@ -84,13 +92,24 @@ int lexer(string filename, std::vector<pair<string, string>> &tokens) {
             tokens.push_back(make_pair(token, lexeme));
         }
         else if(digits.find_first_of(mychar) != string::npos) {
-            //call int/real FSM
+            tokens.push_back(INT_REAL_DFSM(mychar, codefile));
         }
         else if(separators.find_first_of(mychar) != string::npos) {
             tokens.push_back(make_pair(string(1, mychar), "separator"));
         }
         else if(operators.find_first_of(mychar) != string::npos) {
             tokens.push_back(make_pair(string(1, mychar), "operator"));
+            char tempOp = codefile.get(); //Scan next to store into temporary value
+            // == => != <=
+            if (((mychar == '=') && (tempOp == '=' || tempOp == '>')) ||
+                ((mychar == '!') && (tempOp == '=')) ||
+                ((mychar == '<') && (tempOp == '='))) {
+                tokens.push_back(make_pair(string(1, mychar) + string(1, tempOp), "operator"));
+            }
+            else {
+                codefile.unget();
+                tokens.push_back(make_pair(string(1, mychar), "operator"));
+            }
         }
         else if(isspace(mychar)){
             //do nothing to skip
@@ -193,8 +212,57 @@ string realFSM(char mychar, ifstream &codefile) {
         codefile.unget();
 
     //check if accepting state
-    if(state == 2 || state == 3 || state == 4)
+    if(state == 4)
         return token;
     else
         return "";
+}
+
+//implement combined FSM for integer/reals
+pair<string, string> INT_REAL_DFSM(char mychar, ifstream& codefile)
+{
+    int state = 1;
+    string token = string(1, mychar);
+
+    while (true) {
+    if (digits.find_first_of(mychar) != string::npos) {      //if digit
+            state = idDFSM[state - 1][0];
+            token.push_back(mychar);
+        }
+        else if (mychar == '.') {
+            if (idDFSM[state - 1][1] == 5) {   //if new state would be 5, meaning we already have a '.'
+                codefile.unget();
+                break;
+            }
+
+            state = idDFSM[state - 1][1];
+            token.push_back(mychar);
+        }
+        else {                                                      //else break bc invalid symbol
+            break;
+        }
+
+        //add code to check if end of file
+        mychar = codefile.get();
+    }
+
+    //if current character isn't whitespace, move file pointer back 1
+    if (!isspace(mychar))
+        codefile.unget();
+
+    //if state 3, meaning ends with '.', unget '.', set state to int
+    if(state == 3){
+        if (isspace(mychar))        //if pointing to whitespace, unget
+            codefile.unget();
+        codefile.unget();           //pointing to '.', unget
+        token.pop_back();           //pop '.' off the end of the token string
+        state = 2;                  //set state to accepting int
+    }
+
+    //check if accepting state for int or real
+    if (state == 2)
+        return make_pair(token, "integer");
+    else if (state == 4)
+        return make_pair(token, "real");
+    else return make_pair(token, "not int/real");
 }
