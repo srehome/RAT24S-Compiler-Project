@@ -57,14 +57,14 @@ int lexer(string filename, std::vector<pair<string, string>> &tokens) {
     ifstream codefile (filename);
     char mychar;
 
-    while( codefile.is_open() ) {
+    while( codefile.is_open() && !codefile.eof() ) {
         mychar = codefile.get();
 
         if(mychar == '['){
             //code to skip comments
             if(codefile.get() == '*'){  //if next char is '*', it is the start of a comment
                 //find end of comment or end of file
-                while(codefile.is_open()) {
+                while(codefile.is_open() && !codefile.eof()) {
                     //check if charcter starts end comment symbol
                     if(codefile.get() == '*'){
                         if(codefile.get() == ']'){          //check if complete end comment symbol
@@ -138,7 +138,63 @@ string ID_FSM(char mychar, ifstream &codefile) {
 }
 
 //implement FSM for the integers
+string integerFSM(char mychar, ifstream &codefile) {
+    int state = 1;
+    string token = "";
 
+    while (true){
+        if(digits.find_first_of(mychar) != string::npos) { //if digit
+            state = idDFSM[state - 1][0];
+            token.push_back(mychar);
+        }
+        else {
+            break;
+        }
+
+        //add code to check if end of file
+        mychar = codefile.get();
+    }
+    
+    //if current character isn't whitespace, move file pointer back 1
+    if(!isspace(mychar))
+        codefile.unget();
+
+    //check if accepting state
+    if(state == 2)
+        return token;
+    else
+        return "";
+}
 
 //implement FSM for the real numbers
+string realFSM(char mychar, ifstream &codefile) {
+    int state = 1;
+    string token = "";
 
+    while (true){
+        if(digits.find_first_of(mychar) != string::npos) { //if digit
+            state = realDFSM[state - 1][0];
+            token.push_back(mychar);
+        }
+        else if(mychar == '.') {
+            state = realDFSM[state - 1][1];
+            token.push_back(mychar);
+        }
+        else {
+            break;
+        }
+
+        //add code to check if end of file
+        mychar = codefile.get();
+    }
+    
+    //if current character isn't whitespace, move file pointer back 1
+    if(!isspace(mychar))
+        codefile.unget();
+
+    //check if accepting state
+    if(state == 2 || state == 3 || state == 4)
+        return token;
+    else
+        return "";
+}
