@@ -16,7 +16,7 @@ unordered_set<string> keywords{"function", "integer", "boolean", "real", "if", "
 
 //Function Declarations
 string ID_FSM(char, ifstream&);
-pair<string, string> INT_REAL_DFSM(char, ifstream&);
+pair<string, string> Int_Real_DFSM(char, ifstream&);
 int lexer(string, vector<pair<string, string>>&);
 
 //hardcde id DFSM 2D array
@@ -29,12 +29,6 @@ int idDFSM[6][3] = {
     {6, 6, 6}
 };
 
-//hardcode int DFSM 2D array
-int intDFSM[2][2] = {
-    { 1, 2 },
-    { 1, 2 }
-};
-
 //hardcode real DFSM 2D array
 int realDFSM[5][2] = {
     { 2, 5 },
@@ -44,26 +38,9 @@ int realDFSM[5][2] = {
     { 5, 4 }
 };
 
-/*  Helpful Code  */
-/*
-    isspace(mychar)   --  checks if character is whitespace (space, tab, newline, etc)
-    tolower(mychar)   --  converts char to lower
-    string(1, mychar) --  converts char to string (for adding to vector)
-    Vector:
-    Add elements to the vector
-        myVector.push_back(make_pair(1, 3.14));
-        myVector.push_back(make_pair(2, 2.718));
-    Access and manipulate elements
-        First element of the first pair: myVector[0].first
-        Second element of the first pair: myVector[0].second
-        First element of the second pair: myVector[1].first
-        Second element of the second pair: myVector[1].second 
-    Loop through vector
-        for (const auto& pair : myVector) {
-            cout << pair.first << ": " << pair.second << endl;
-        }
-*/
+
 //Lexical Analyzer function
+
 int lexer(string filename, vector<pair<string, string>> &tokens) {
     //Open the file and create a variable to keep track of current character
     ifstream codefile (filename);
@@ -101,7 +78,7 @@ int lexer(string filename, vector<pair<string, string>> &tokens) {
         }
         //check if character is in digits string
         else if(digits.find_first_of(mychar) != string::npos) {
-            tokens.push_back(INT_REAL_DFSM(mychar, codefile));  //add int/real to list of tokens
+            tokens.push_back(Int_Real_DFSM(mychar, codefile));  //add int/real to list of tokens
         }
         //check if character is in separators string
         else if(separators.find_first_of(mychar) != string::npos) {
@@ -133,7 +110,9 @@ int lexer(string filename, vector<pair<string, string>> &tokens) {
     }
 }
 
-//implement FSM for the identifiers
+
+//Implement the FSM for the identifiers
+
 string ID_FSM(char mychar, ifstream &codefile) {
     int state = 1;
     string token = string(1, mychar);
@@ -171,70 +150,10 @@ string ID_FSM(char mychar, ifstream &codefile) {
     else return "";
 }
 
-//implement FSM for the integers
-string integerFSM(char mychar, ifstream &codefile) {
-    int state = 1;
-    string token = "";
 
-    while (true){
-        if(digits.find_first_of(mychar) != string::npos) { //if character in digits string
-            state = idDFSM[state - 1][0];
-            token.push_back(mychar);
-        }
-        else {
-            break;
-        }
+//Implement combined FSM for integer/reals
 
-        //add code to check if end of file
-        mychar = codefile.get();
-    }
-    
-    //if current character isn't whitespace, move file pointer back 1
-    if(!isspace(mychar))
-        codefile.unget();
-
-    //check if accepting state
-    if(state == 2)
-        return token;
-    else
-        return "";
-}
-
-//implement FSM for the real numbers
-string realFSM(char mychar, ifstream &codefile) {
-    int state = 1;
-    string token = "";
-
-    while (true){
-        if(digits.find_first_of(mychar) != string::npos) { //if digit
-            state = realDFSM[state - 1][0];
-            token.push_back(mychar);
-        }
-        else if(mychar == '.') {
-            state = realDFSM[state - 1][1];
-            token.push_back(mychar);
-        }
-        else {
-            break;
-        }
-
-        //add code to check if end of file
-        mychar = codefile.get();
-    }
-    
-    //if current character isn't whitespace, move file pointer back 1
-    if(!isspace(mychar))
-        codefile.unget();
-
-    //check if accepting state
-    if(state == 4)
-        return token;
-    else
-        return "";
-}
-
-//implement combined FSM for integer/reals
-pair<string, string> INT_REAL_DFSM(char mychar, ifstream& codefile)
+pair<string, string> Int_Real_DFSM(char mychar, ifstream& codefile)
 {
     int state = 1;
     string token = string(1, mychar);
@@ -283,3 +202,4 @@ pair<string, string> INT_REAL_DFSM(char mychar, ifstream& codefile)
         return make_pair(token, "real");
     else return make_pair(token, "not int/real");
 }
+
