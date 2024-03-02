@@ -8,8 +8,8 @@ using namespace std;
 
 string letters = "abcdefghijklmnopqrstuvwxyz"; //if(letters.find_first_of(mychar) != string::npos) then it is a letter
 string digits = "0123456789"; //if(digits.find_first_of(mychar) != string::npos) then it is a digit
-string separators = "";
-string operators = "";
+string separators = "$,;{}()";
+string operators = "+-*/=<>!"; //Operator List: + - * / == != <= => 
 unordered_set<string> keywords{"function", "integer", "boolean", "real", "if", "endif", "else",
                                 "return", "print", "scan", "while", "endwhile", "true", "false"};
 
@@ -26,7 +26,13 @@ int idDFSM[6][3] = {
 //hardcode int DFSM 2D array
 
 //hardcode real DFSM 2D array
-
+int realDFSM[5][2] = {
+    { 2, 5 },
+    { 2, 3 },
+    { 4, 5 },
+    { 4, 5 },
+    { 5, 4 }
+};
 
 /*  Helpful Code  */
 /*
