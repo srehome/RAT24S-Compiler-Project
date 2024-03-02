@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <unordered_set>
 
 using namespace std;
 
@@ -9,6 +10,8 @@ string letters = "abcdefghijklmnopqrstuvwxyz"; //if(letters.find_first_of(mychar
 string digits = "0123456789"; //if(digits.find_first_of(mychar) != string::npos) then it is a digit
 string separators = "";
 string operators = "";
+unordered_set<string> keywords{"function", "integer", "boolean", "real", "if", "endif", "else",
+                                "return", "print", "scan", "while", "endwhile", "true", "false"};
 
 //hardcde id DFSM 2D array
 int idDFSM[6][3] = {
@@ -70,8 +73,9 @@ int lexer(string filename, std::vector<pair<string, string>> &tokens) {
             }
         }
         else if(letters.find_first_of(tolower(mychar)) != string::npos){   //begin LA
-            ID_FSM(mychar, codefile, tokens);
-            //check if last item in vector is keyword
+            string token = ID_FSM(mychar, codefile);
+            string lexeme = keywords.find(token) != keywords.end() ? "keyword" : "identifier";
+            tokens.push_back(make_pair(token, lexeme));
         }
         else if(digits.find_first_of(mychar) != string::npos) {
             //call int/real FSM
@@ -92,7 +96,7 @@ int lexer(string filename, std::vector<pair<string, string>> &tokens) {
 }
 
 //implement FSM for the identifiers
-int ID_FSM(char mychar, ifstream &codefile, std::vector<pair<string, string>> &tokens) {
+string ID_FSM(char mychar, ifstream &codefile) {
     int state = 1;
     string token = string(1, mychar);
 
@@ -117,17 +121,14 @@ int ID_FSM(char mychar, ifstream &codefile, std::vector<pair<string, string>> &t
         mychar = codefile.get();
     }
     
-    //add id token to vector
-    tokens.push_back(make_pair(token, "identifier"));
-    
     //if current character isn't whitespace, move file pointer back 1
     if(!isspace(mychar))
         codefile.unget();
 
     //check if accepting state
     if(state == 2 || state == 3 || state == 4 || state == 5)
-        return 1;   //should I change the FSM to return token string???
-    else return 0;
+        return token;   //should I change the FSM to return token string???
+    else return "";
 }
 
 //implement FSM for the integers
