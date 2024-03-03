@@ -1,8 +1,6 @@
 $
 function calculate_average (scores integer{})
 
-[*Copy code**][*]*]
-
 real sum = 0.00;
 for (integer i = 0; i<length(scores); i = i+1..)
 {
