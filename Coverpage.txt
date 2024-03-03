@@ -1,9 +1,9 @@
 COVER PAGE
             CS323 Programming Assignments
 
-1. Names [ 1.Samantha ] Section [07]
-         [ 2.Sinan    ] Section [07]
-         [ 3.Patrick  ] Section [07]
+1. Names [ 1. Samantha Rehome ] Section [07]
+         [ 2. Sinan Abdul-Hafiz ] Section [07]
+         [ 3. Patrick Chau ] Section [07]
          
 2. Assignment Number [1]
 
