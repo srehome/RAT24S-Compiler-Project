@@ -1,21 +1,36 @@
-Single_Symbols ! @ # $ % ^ & * ( ) - + = ~ `
+$
 
-Combined_Symbols !@ #$ %^ &* () -+ =~ `!
+function calculate_average (scores integer[])
 
-Symbols_Underscores !_ @_ #_ $_ %_ ^_ &_ *_ (_ )_ -_ +_ =_ ~_ `_
+Copy code
+integer sum = 0;
 
-Symbols_Numbers !1 @2 #3 $4 %5 ^6 &7 *8 (9 )0 -1 +2 =3 ~4 `5
+for (i = 0; i < length(scores); i = i + 1)
 
-Symbols_Numbers_Underscores
+{
 
-!1_ @2_ #3_ $4_ %5_ ^6_ &7_ *8_ (9_ )0_ -1_ +2_ =3_ ~4_ `5_
+    sum = sum + scores[i];
 
-if_!@#$ while_%^&* for_()-+ switch_=~`!
+}
 
-{ This is a comment } {thisisacomment}
+endfor
 
-{{{{}}]}
+if (length(scores) > 0)
 
-{+×/<>}(result=Happy!@#_$%&bird+!).;
+{
 
-if{} print/item! print(eagle+lizard);
+    return sum / length(scores);
+
+}
+
+else
+
+{
+
+    return 0;
+
+}
+
+endif
+
+$
