@@ -15,9 +15,9 @@ unordered_set<string> keywords{"function", "integer", "boolean", "real", "if", "
                                 "return", "print", "scan", "while", "endwhile", "true", "false"};
 
 //Function Declarations
-string ID_FSM(char, ifstream&);
-pair<string, string> Int_Real_DFSM(char, ifstream&);
-pair<string, string> lexer(char,  ifstream&);
+string ID_FSM(char mychar, ifstream &codefile);
+pair<string, string> Int_Real_DFSM(char mychar, ifstream &codefile);
+pair<string, string> lexer(char mychar,  ifstream &codefile);
 
 //hardcde id DFSM 2D array
 int idDFSM[6][3] = {
