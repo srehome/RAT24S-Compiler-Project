@@ -3,9 +3,9 @@ COVER PAGE
         Fill out all entries 1 - 7. If not, there will be deductions!
 
 
-1. Names [ 1.Samantha ] Section [ ]
-         [ 2.Sinan ] Section [ ]
-         [ 3.Patrick ] Section [ ]
+1. Names [ 1.Samantha ] Section [07]
+         [ 2.Sinan    ] Section [07]
+         [ 3.Patrick  ] Section [07]
          
 2. Assignment Number [1]
 
