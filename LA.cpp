@@ -133,7 +133,6 @@ pair<string, string> Int_Real_DFSM(char mychar, ifstream& codefile)
         }
         else if (mychar == '.') {               //if character is '.'
             if (realDFSM[state - 1][1] == 5) {    //if new state would be 5, meaning we already have a '.'
-                codefile.unget();               //unget second '.'
                 break;                          //break because int/real token is done
             }
 
@@ -152,13 +151,11 @@ pair<string, string> Int_Real_DFSM(char mychar, ifstream& codefile)
 
     //if current character isn't whitespace, move file pointer back 1
     if (!isspace(mychar))
-        codefile.unget();
+        codefile.unget();       //ungets illegal characters including second '.'
 
     //if state 3, meaning ends with '.', unget '.', & set state to int acceptance state
     if(state == 3){
-        if (isspace(mychar))        //if pointing to whitespace, unget
-            codefile.unget();
-        codefile.unget();           //currently pointing to '.', unget
+        codefile.unget();           //unget hanging '.'
         token.pop_back();           //pop '.' off the end of the token string
         state = 2;                  //set state to accepting int
     }
