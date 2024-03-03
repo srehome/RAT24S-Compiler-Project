@@ -8,9 +8,7 @@ integer sum = 0;
 for (i = 0; i < length(scores); i = i + 1)
 
 {
-
     sum = sum + scores[i];
-
 }
 
 endfor
@@ -18,17 +16,13 @@ endfor
 if (length(scores) > 0)
 
 {
-
     return sum / length(scores);
-
 }
 
 else
 
 {
-
     return 0;
-
 }
 
 endif
