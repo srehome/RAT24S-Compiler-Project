@@ -14,8 +14,7 @@ operator       *
 separator      (
 identifier     fahr
 operator       -
-integer        3
-integer        2
+integer        32
 separator      )
 operator       /
 integer        9
