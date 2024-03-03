@@ -45,9 +45,9 @@ pair<string, string> lexer(char mychar, ifstream &codefile) {
 
     //check if character is in letters string
     if(letters.find_first_of(tolower(mychar)) != string::npos){
-        string token = ID_FSM(mychar, codefile);    //call id fsm to read in and return full token
-        string lexeme = keywords.find(token) != keywords.end() ? "keyword" : "identifier";  //if found in keywords, lexeme set to keyword, else identifier
-        return make_pair(token, lexeme); //add id/keyowrd to list of tokens
+        string lexeme = ID_FSM(mychar, codefile);    //call id fsm to read in and return full token
+        string token = keywords.find(lexeme) != keywords.end() ? "keyword" : "identifier";  //if found in keywords, lexeme set to keyword, else identifier
+        return make_pair(lexeme, token); //add id/keyowrd to list of tokens
     }
     //check if character is in digits string
     else if(digits.find_first_of(mychar) != string::npos) {

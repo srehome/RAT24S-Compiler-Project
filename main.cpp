@@ -6,9 +6,10 @@
 #include "LA.cpp"
 
 int main () {
-    //code to get file name string
     std::string filename;
-    std::vector<std::pair<std::string, std::string>> tokenVector;
+
+    //tokenVector(lexeme, token);
+    std::vector<std::pair<std::string, std::string>> tokenVector; 
 
     //ask user to provide source code text file
     std::cout << "Please enter a source code text filename: ";
