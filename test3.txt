@@ -1,30 +1,30 @@
 $
+function calculate_average (scores integer{})
 
-function calculate_average (scores integer[])
+[*Copy code**][*]*]
 
-Copy code
-integer sum = 0;
-
-for (i = 0; i < length(scores); i = i + 1)
-
+real sum = 0.00;
+for (integer i = 0; i<length(scores); i = i+1..)
 {
-    sum = sum + scores[i];
+    sum = sum + scores{i};
 }
-
 endfor
 
-if (length(scores) > 0)
+integer counter = 0;
+while (counter < length(scores)) {
+    print(score{counter});
+    counter=counter+1;
+}endwhile
 
+print("Average" + sum /length(scores));
+
+if (length(scores) =>= .00)
 {
-    return sum / length(scores);
+    return sum/ length(scores);
 }
-
-else
-
-{
+else          {
     return 0;
 }
-
 endif
 
 $
