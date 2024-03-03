@@ -1,0 +1,29 @@
+COVER PAGE
+            CS323 Programming Assignments
+        Fill out all entries 1 - 7. If not, there will be deductions!
+
+
+1. Names [ 1.Samantha ] Section [ ]
+         [ 2.Sinan ] Section [ ]
+         [ 3.Patrick ] Section [ ]
+2. Assignment Number [1]
+
+3. Due Date [03/02/2024]
+
+4. Submission Date [03/02/2024]
+
+5. Executable File name [ ]
+(A file that can be executed without compilation by the instructor, such as .exe, .jar,
+etc - NOT a source file such as .cpp )
+
+6. Names of the testcase files - input test file output test file
+test 1. [test1] [output1]
+test 2. [test2] [output2]
+test 3. [test3] [output3]
+
+7. Operating System [Window]
+(Window – preferred or Unix/Linux)
+----------------------------------------------------------------------------------------------------------------------------------
+To be filled out by the Instructor:
+
+Comments and Grade:
