@@ -1,18 +1,9 @@
 $
-function factorial(num integer)
-{
-  if (num <= 1) 
-  {
-    return 1;
-  }
-  else
-  {
-    return num * factorial(num-1);
-  }
-endif
-}
-
-integer n = 5;
+function factorial(num real) {
+  if (num <= 1)   { return 1.0000;}
+          else{  return num * factorial(num-1);  }
+endif }
+    int n = 5;
 integer result = factorial(n);
-print(result);
+print ( result )   ;
 $
