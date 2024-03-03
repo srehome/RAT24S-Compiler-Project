@@ -35,7 +35,7 @@ int realDFSM[5][2] = {
     { 2, 3 },
     { 4, 5 },
     { 4, 5 },
-    { 5, 4 }
+    { 5, 5 }
 };
 
 
@@ -128,16 +128,16 @@ pair<string, string> Int_Real_DFSM(char mychar, ifstream& codefile)
 
     while (true) {
     if (digits.find_first_of(mychar) != string::npos) {      //if character is in digits string
-            state = idDFSM[state - 1][0];
+            state = realDFSM[state - 1][0];
             token.push_back(mychar);
         }
         else if (mychar == '.') {               //if character is '.'
-            if (idDFSM[state - 1][1] == 5) {    //if new state would be 5, meaning we already have a '.'
+            if (realDFSM[state - 1][1] == 5) {    //if new state would be 5, meaning we already have a '.'
                 codefile.unget();               //unget second '.'
                 break;                          //break because int/real token is done
             }
 
-            state = idDFSM[state - 1][1];       //else change state & add '.' character
+            state = realDFSM[state - 1][1];       //else change state & add '.' character
             token.push_back(mychar);
         }
         else {                                 //else break because invalid symbol
