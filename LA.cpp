@@ -17,7 +17,7 @@ unordered_set<string> keywords{"function", "integer", "boolean", "real", "if", "
 //Function Declarations
 string ID_FSM(char, ifstream&);
 pair<string, string> Int_Real_DFSM(char, ifstream&);
-int lexer(string, vector<pair<string, string>>&);
+void lexer(string, vector<pair<string, string>>&);
 
 //hardcde id DFSM 2D array
 int idDFSM[6][3] = {
@@ -41,7 +41,7 @@ int realDFSM[5][2] = {
 
 //Lexical Analyzer function
 
-int lexer(string filename, vector<pair<string, string>> &tokens) {
+void lexer(string filename, vector<pair<string, string>> &tokens) {
     //Open the file and create a variable to keep track of current character
     ifstream codefile (filename);
     char mychar;
