@@ -28,7 +28,7 @@ int main () {
     //while the file is not at the end, parse tokens, identify them, and add them to the vector
     while(!codefile.eof()) {
         //code to skip comments
-        if(mychar == '['){  
+        if(mychar == '['){
             if(codefile.get() == '*'){  //if next char is '*', it is the start of a comment
                 //find the end of the comment or the end of the file
                 while(!codefile.eof()) {
@@ -37,7 +37,7 @@ int main () {
                         if(!codefile.eof()){            //if still not end of file
                             if(codefile.get() == ']'){  //check if complete end comment symbol
                                 break;                  //if comment ended, break out of reading comment loop
-                            }
+                            } else codefile.unget();
                         }
                     }
                 }
