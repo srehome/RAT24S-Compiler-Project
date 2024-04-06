@@ -1,3 +1,6 @@
+//INCLUDES
+#include "LA.cpp"
+
 //CONSTANTS???
 
 
@@ -5,10 +8,15 @@
 
 
 //RULE 1
+void RAT24S(ifstream& codefile) {
+    std::pair LexemeTokenPair = lexer(codefile.get(), codefile);
+    if(LexemeTokenPair.first == "$") {
 
-
+    }
+        
+}
 //RULE 2
-
+void OptFunctionDefinitions(char mychar, ifstream& codefile)
 
 //RULE 3
 
