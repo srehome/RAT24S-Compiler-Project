@@ -135,7 +135,9 @@ pair<string, string> Int_Real_DFSM(char mychar, ifstream& codefile)
             state = realDFSM[state - 1][1];       //else change state & add '.' character
             token.push_back(mychar);
         }
-        else if (!isspace(mychar)) {                                 //else break because invalid symbol
+        else if (!isspace(mychar) &&
+                separators.find_first_of(mychar) == string::npos &&
+                operators.find_first_of(mychar) == string::npos) {                  //else break because invalid symbol
             state = 5;
             token.push_back(mychar);
         }
