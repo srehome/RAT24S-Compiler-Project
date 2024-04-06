@@ -60,6 +60,5 @@ illegal        #
 illegal        _
 integer        23
 identifier     rty
-integer        000
-illegal        .
-integer        123
+illegal        000.
+illegal        .123

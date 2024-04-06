@@ -49,8 +49,8 @@ pair<string, string> lexer(char mychar, ifstream &codefile) {
         string token = keywords.find(lexeme) != keywords.end() ? "keyword" : "identifier";  //if found in keywords, lexeme set to keyword, else identifier
         return make_pair(lexeme, token); //add id/keyowrd to list of tokens
     }
-    //check if character is in digits string
-    else if(digits.find_first_of(mychar) != string::npos) {
+    //check if character is in digits string or is '.'
+    else if(digits.find_first_of(mychar) != string::npos || mychar == '.') {
         return Int_Real_DFSM(mychar, codefile);  //add int/real to list of tokens
     }
     //check if character is in separators string
@@ -132,10 +132,6 @@ pair<string, string> Int_Real_DFSM(char mychar, ifstream& codefile)
             token.push_back(mychar);
         }
         else if (mychar == '.') {               //if character is '.'
-            if (realDFSM[state - 1][1] == 5) {    //if new state would be 5, meaning we already have a '.'
-                break;                          //break because int/real token is done
-            }
-
             state = realDFSM[state - 1][1];       //else change state & add '.' character
             token.push_back(mychar);
         }
@@ -153,18 +149,13 @@ pair<string, string> Int_Real_DFSM(char mychar, ifstream& codefile)
     if (!isspace(mychar))
         codefile.unget();       //ungets illegal characters including second '.'
 
-    //if state 3, meaning ends with '.', unget '.', & set state to int acceptance state
-    if(state == 3){
-        codefile.unget();           //unget hanging '.'
-        token.pop_back();           //pop '.' off the end of the token string
-        state = 2;                  //set state to accepting int
-    }
 
     //check if accepting state for int or real
     if (state == 2)
         return make_pair(token, "integer");
     else if (state == 4)
         return make_pair(token, "real");
-    else return make_pair(token, "not int/real");
+    else
+        return make_pair(token, "illegal");
 }
 
