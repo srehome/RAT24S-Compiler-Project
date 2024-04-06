@@ -32,9 +32,7 @@ identifier     i
 operator       =
 identifier     i
 operator       +
-integer        1
-illegal        .
-illegal        .
+illegal        1..
 separator      )
 separator      {
 identifier     sum
@@ -101,8 +99,7 @@ identifier     scores
 separator      )
 operator       =>
 operator       =
-illegal        .
-integer        00
+illegal        .00
 separator      )
 separator      {
 keyword        return
