@@ -58,7 +58,6 @@ identifier     zbc12__x
 identifier     x
 illegal        #
 illegal        _
-integer        23
-identifier     rty
+illegal        23rty
 illegal        000.
 illegal        .123

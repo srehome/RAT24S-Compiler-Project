@@ -127,7 +127,7 @@ pair<string, string> Int_Real_DFSM(char mychar, ifstream& codefile)
     string token = "";
 
     while (true) {
-    if (digits.find_first_of(mychar) != string::npos) {      //if character is in digits string
+        if (digits.find_first_of(mychar) != string::npos) {      //if character is in digits string
             state = realDFSM[state - 1][0];
             token.push_back(mychar);
         }
@@ -135,9 +135,11 @@ pair<string, string> Int_Real_DFSM(char mychar, ifstream& codefile)
             state = realDFSM[state - 1][1];       //else change state & add '.' character
             token.push_back(mychar);
         }
-        else {                                 //else break because invalid symbol
-            break;
+        else if (!isspace(mychar)) {                                 //else break because invalid symbol
+            state = 5;
+            token.push_back(mychar);
         }
+        else break;
 
         //add code to check if end of file
         if(!codefile.eof())
