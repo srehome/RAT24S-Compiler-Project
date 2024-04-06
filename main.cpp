@@ -27,36 +27,8 @@ int main () {
 
     //while the file is not at the end, parse tokens, identify them, and add them to the vector
     while(!codefile.eof()) {
-        //code to skip comments
-        if(mychar == '['){
-            if(codefile.get() == '*'){  //if next char is '*', it is the start of a comment
-                //find the end of the comment or the end of the file
-                while(!codefile.eof()) {
-                    //check if charcter starts end comment symbol
-                    if(codefile.get() == '*'){
-                        if(!codefile.eof()){            //if still not end of file
-                            if(codefile.get() == ']'){  //check if complete end comment symbol
-                                break;                  //if comment ended, break out of reading comment loop
-                            } else codefile.unget();
-                        }
-                    }
-                }
-            }
-            else {                      //else not start of comment, it's just illegal
-                codefile.unget();       //go back to '['
-                std::string token = "illegal";
-                tokenVector.push_back(std::make_pair(std::string(1, mychar), token));  //add '[' to list of tokens as illegal
-            }
-        }
-        //check if character is whitespace
-        else if(isspace(mychar)){
-            //do nothing to skip whitespace
-        }
         //call lexer and add lexeme, token pair to vector
-        else{
-            tokenVector.push_back(lexer(mychar, codefile));
-        }
-        
+        tokenVector.push_back(lexer(mychar, codefile));
         //get next character
         mychar = codefile.get();
     }
