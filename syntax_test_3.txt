@@ -26,20 +26,19 @@ $
 		if (exponent => 1)
 			{
 				while(exponent=>1)
-				{
-				product=product*real;
-				exponent=exponent-1;
+				{	product=product*base;
+					exponent=exponent-1;
 				}endwhile
 			return product;
 			}
 			
 		if (exponent <= -1)
 			{
-				while(exponent=>1)
+				while(exponent => 1)
 				{
-				product=product/real;
-				exponent=exponent+1;
-				}endwhile
+					product=product/base;
+					exponent=exponent+1;
+				} endwhile
 			return product;
 			}
 			
