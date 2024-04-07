@@ -431,7 +431,8 @@ void If(ifstream& codefile) {
 void If_(ifstream& codefile) {
     if(PrintRules) printf("     <If'> -> endif | else <Statement> endif");
     if(LexemeTokenPair.first == "endif") {
-        //do nothing
+        LexemeTokenPair = lexer(codefile.get(), codefile);
+        if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
     }
     else if(LexemeTokenPair.first == "else") {
         LexemeTokenPair = lexer(codefile.get(), codefile);
