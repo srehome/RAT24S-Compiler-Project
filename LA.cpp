@@ -41,19 +41,24 @@ int realDFSM[5][2] = {
 
 //Lexical Analyzer function
 
-pair<string, string> lexer(char mychar, ifstream &codefile) {
+pair<string, string> lexer(char mychar, ifstream &codefile, int &linenumber) {
     while(!codefile.eof()) {
         //code to skip comments
         if(mychar == '['){
             if(codefile.get() == '*'){  //if next char is '*', it is the start of a comment
                 //find the end of the comment or the end of the file
                 while(!codefile.eof()) {
+                    mychar = codefile.get();
+                    //if char is newline
+                    if(mychar == '\n') {
+                        linenumber++;
+                    }
                     //check if charcter starts end comment symbol
-                    if(codefile.get() == '*'){
+                    if(mychar == '*'){
                         if(!codefile.eof()){            //if still not end of file
                             if(codefile.get() == ']'){  //check if complete end comment symbol
                                 break;                  //if comment ended, break out of reading comment loop
-                            } else codefile.unget();
+                            }
                         }
                     }
                 }
@@ -67,6 +72,9 @@ pair<string, string> lexer(char mychar, ifstream &codefile) {
         //check if character is whitespace
         else if(isspace(mychar)){
             //do nothing to skip whitespace
+            if(mychar == '\n') {
+                linenumber++;
+            }
         }
         //identify and return lexeme, token pair
         else{
@@ -104,7 +112,7 @@ pair<string, string> lexer(char mychar, ifstream &codefile) {
                 return make_pair(string(1, mychar), "illegal");
             }
         }
-        
+
         //get next character
         mychar = codefile.get();
     }
