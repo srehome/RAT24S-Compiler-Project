@@ -66,44 +66,112 @@ void RAT24S(ifstream& codefile) {
 
     return;
 }
-//RULE 2: <Opt Function Definitions> ::= <Function Definitions> | <Empty>
+
+//RULE 2: <Opt Function Definitions> -> <Function Definitions> | <Empty>
 void OptFunctionDefinitions(ifstream& codefile) {
-    if(PrintRules) printf("     <Opt Function Definitions> ::= <Function Definitions> | <Empty>");
+    if(PrintRules) printf("     <Opt Function Definitions> -> <Function Definitions> | <Empty>");
     FunctionDefinitions(codefile);
 }
 
 //RULE 3: <Function Definitions> -> <Function> <Function Definitions'>
 void FunctionDefinitions(ifstream& codefile) {
-
+    if(PrintRules) printf("     <Function Definitions> -> <Function> <Function Definitions'>");
+    Function(codefile);
+    FunctionDefinitionsPrime(codefile);
 }
 
 
 //RULE 3.5: <Function Definitions'> -> <Function Definitions> | ε
-void FunctionDefinitions_(ifstream& codefile) {
-
+void FunctionDefinitionsPrime(ifstream& codefile) {
+    if(PrintRules) printf("     <Function Definitions'> -> <Function Definitions> | ε");
+    if(LexemeTokenPair.first == "function") {
+        FunctionDefinitions(codefile);
+    }
+    else {
+        //epsilon
+    }
 }
 
-//RULE 4: <Function> ::= function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>
+//RULE 4: <Function> -> function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>
 void Function(ifstream& codefile) {
+    if(PrintRules) printf("     <Function> ::= function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>");
+    //check for "function" keyword
+    if(LexemeTokenPair.first == "function") {
+        LexemeTokenPair = lexer(codefile.get(), codefile);
+        if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+        //parse identifier
+        if(LexemeTokenPair.second == "identifier"){
+            LexemeTokenPair = lexer(codefile.get(), codefile);
+            printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
 
+            //check for "("
+            if(LexemeTokenPair.first == "(") {
+                LexemeTokenPair = lexer(codefile.get(), codefile);
+                if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+                //parse optional parameter list
+                OptParameterList(codefile);
+                //check for ")"
+                if(LexemeTokenPair.first == ")") {
+                    LexemeTokenPair = lexer(codefile.get(), codefile);
+                    if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+                    //parse optional declaration list
+                    OptDeclarationList(codefile);
+                    //parse body
+                    Body(codefile);
+                }
+                else {
+                    if(PrintRules) printf("Error: ')' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+                    return;
+                }
+            }
+            else {
+                if(PrintRules) printf("Error: '(' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+                return;
+            }
+        }
+        else {
+            if(PrintRules) printf("Error: identifier expexted; recived %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            return;
+        }
+    }
+    else {
+        if(PrintRules) printf("Error: 'function' keyword expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        return;
+    }
 }
 
 //RULE 5: <Opt Parameter List> ::= <Parameter List> | <Empty>
 void OptParameterList(ifstream& codefile) {
-
+    if(PrintRules) printf("     <Opt Parameter List> ::= <Parameter List> | <Empty>");
+    if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean" || LexemeTokenPair.first == "real") {
+        ParameterList(codefile);
+    }
+    else {
+        //epsilon
+    }
 }
 
 //RULE 6: <Parameter List> -> <Parameter> <Parameter List'>
 void ParameterList(ifstream& codefile) {
-
+    if(PrintRules) printf("     <Parameter List> -> <Parameter> <Parameter List'>");
+    Parameter(codefile);
+    ParameterList_(codefile);
 }
 
 //RULE 6.5: <Parameter List'> -> , <Parameter List> | ε
 void ParameterList_(ifstream& codefile) {
-
+    if(PrintRules) printf("     <Parameter List'> ->, <Parameter List> | ε");
+    if(LexemeTokenPair.first == ",") {
+        LexemeTokenPair = lexer(codefile.get(), codefile);
+        if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+        ParameterList(codefile);
+    }
+    else {
+        //epsilon
+    }
 }
 
-//RULE 7: <Parameter> ::= <IDs > <Qualifier>
+//RULE 7: <Parameter> ::= <IDs> <Qualifier>
 void Parameter(ifstream& codefile) {
 
 }
