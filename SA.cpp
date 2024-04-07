@@ -204,7 +204,7 @@ void Body(ifstream& codefile) {
         }
         else {
             if(PrintRules) printf("Error: '}' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-            return;
+            exit(1);
         }
     }
 }
@@ -232,7 +232,7 @@ void DeclarationList(ifstream& codefile) {
     }
     else {
         if(PrintRules) printf("Error: ';' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
 }
 
@@ -261,8 +261,15 @@ void Declaration(ifstream& codefile) {
 void IDs(ifstream& codefile) {
     if(PrintRules) printf("     <IDs> -> <Identifier> <IDs'>");
     //parse identifier
-    Identifier(codefile);
-    IDs_(codefile);
+    if(LexemeTokenPair.second == "identifier"){
+        LexemeTokenPair = lexer(codefile.get(), codefile);
+        if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+        IDs_(codefile);
+    }
+    else {
+        if(PrintRules) printf("Error: identifier expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        exit(1);
+    }
 }
 
 //RULE 13.5: <IDs'> ->, <IDs> | ε
@@ -323,7 +330,7 @@ void Statement(ifstream& codefile) {
     }
     else {
         if(PrintRules) printf("Error: invalid statement; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
 }
 
@@ -343,12 +350,12 @@ void Compound(ifstream& codefile) {
         }
         else {
             if(PrintRules) printf("Error: '}' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-            return;
+            exit(1);
         }
     }
     else {
         if(PrintRules) printf("Error: '{' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
 }
 
@@ -366,7 +373,7 @@ void Assign(ifstream& codefile) {
     }
     else {
         if(PrintRules) printf("Error: '=' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
     //check for ";"
     if(LexemeTokenPair.first == ";") {
@@ -375,7 +382,7 @@ void Assign(ifstream& codefile) {
     }
     else {
         if(PrintRules) printf("Error: ';' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
 }
 
