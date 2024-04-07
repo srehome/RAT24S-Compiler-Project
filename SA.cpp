@@ -52,11 +52,19 @@ void RAT24S(ifstream& codefile) {
     //check last $, else print error
     if(LexemeTokenPair.first == "$") {
         //check if eof (loop through spaces?), else error
+        while(!codefile.eof()) {
+            if(!isspace(codefile.get()) && !codefile.eof()) {
+                if(PrintRules) printf("Error: eof marker expected, received unexpected characters");
+                return;
+            }
+        }
     }
     else {
         if(PrintRules) printf("Error: last '$' separator expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
         return;
     }
+
+    return;
 }
 //RULE 2: <Opt Function Definitions> ::= <Function Definitions> | <Empty>
 void OptFunctionDefinitions(ifstream& codefile) {
