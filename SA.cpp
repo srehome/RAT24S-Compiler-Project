@@ -180,27 +180,76 @@ void Qualifier(ifstream& codefile) {
 
 //RULE 9: <Body> ::= { < Statement List> }
 void Body(ifstream& codefile) {
-
+    if(PrintRules) printf("     <Body> ::= { < Statement List> }");
+    //check for "{"
+    if(LexemeTokenPair.first == "{") {
+        LexemeTokenPair = lexer(codefile.get(), codefile);
+        if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+        //parse statement list
+        StatementList(codefile);
+        //check for "}"
+        if(LexemeTokenPair.first == "}") {
+            LexemeTokenPair = lexer(codefile.get(), codefile);
+            if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+        }
+        else {
+            if(PrintRules) printf("Error: '}' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            return;
+        }
+    }
+    else {
+        if(PrintRules) printf("Error: '{' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        return;
+    }
 }
 
 //RULE 10: <Opt Declaration List> ::= <Declaration List> | <Empty>
-void OptDeclarationList(ifstream& codefile) {
-
+void OptDeclarationList(ifstream& codefile, LexemeTokenPair& LexemeTokenPair) {
+    if(PrintRules) printf("     <Opt Declaration List> ::= <Declaration List> | <Empty>");
+    LexemeTokenPair = lexer(codefile.get(), codefile);
+    if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean" || LexemeTokenPair.first == "real") {
+        DeclarationList(codefile, LexemeTokenPair);
+    }
+    else {
+        //epsilon
+    }
 }
 
 //RULE 11: <Declaration List> -> <Declaration> ; <Declaration List'>
-void DeclarationList(ifstream& codefile) {
-
+void DeclarationList(ifstream& codefile, LexemeTokenPair& LexemeTokenPair) {
+    if(PrintRules) printf("     <Declaration List> -> <Declaration> ; <Declaration List'>");
+    Declaration(codefile, LexemeTokenPair);
+    //check for ";"
+    if(LexemeTokenPair.first == ";") {
+        LexemeTokenPair = lexer(codefile.get(), codefile);
+        if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+        DeclarationList_(codefile, LexemeTokenPair);
+    }
+    else {
+        if(PrintRules) printf("Error: ';' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        return;
+    }
 }
 
 //RULE 11.5: <Declaration List'> -> <Declaration List> | ε
-void DeclarationList_(ifstream& codefile) {
-
+void DeclarationList_(ifstream& codefile, LexemeTokenPair& LexemeTokenPair) {
+    if(PrintRules) printf("     <Declaration List'> -> <Declaration List> | ε");
+    LexemeTokenPair = lexer(codefile.get(), codefile);
+    if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean" || LexemeTokenPair.first == "real") {
+        DeclarationList(codefile, LexemeTokenPair);
+    }
+    else {
+        //epsilon
+    }
 }
 
 //RULE 12: <Declaration> ::= <Qualifier > <IDs>
-void Declaration(ifstream& codefile) {
-
+void Declaration(ifstream& codefile, LexemeTokenPair& LexemeTokenPair) {
+    if(PrintRules) printf("     <Declaration> ::= <Qualifier > <IDs>");
+    //parse qualifier
+    Qualifier(codefile, LexemeTokenPair);
+    //parse IDs
+    IDs(codefile, LexemeTokenPair);
 }
 
 //RULE 13: <IDs> -> <Identifier> <IDs'>
