@@ -26,7 +26,7 @@ void RAT24S(ifstream& codefile) {
         OptFunctionDefinitions(codefile);
     }
     else {
-        if(PrintRules) printf("Error: first '$' separator expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: first '$' separator expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 
@@ -37,7 +37,7 @@ void RAT24S(ifstream& codefile) {
         OptDeclarationList(codefile);
     }
     else {
-        if(PrintRules) printf("Error: second '$' separator expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: second '$' separator expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 
@@ -48,7 +48,7 @@ void RAT24S(ifstream& codefile) {
         StatementList(codefile);
     }
     else {
-        if(PrintRules) printf("Error: third '$' separator expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: third '$' separator expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
     
@@ -57,13 +57,13 @@ void RAT24S(ifstream& codefile) {
         //check if eof (loop through spaces?), else error
         while(!codefile.eof()) {
             if(!isspace(codefile.get()) && !codefile.eof()) {
-                if(PrintRules) printf("Error: eof marker expected, received unexpected characters");
+                if(PrintRules) printf("Error Line Number %d: eof marker expected, received unexpected characters", lineNumber);
                 exit(1);
             }
         }
     }
     else {
-        if(PrintRules) printf("Error: last '$' separator expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: last '$' separator expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
@@ -125,22 +125,22 @@ void Function(ifstream& codefile) {
                     Body(codefile);
                 }
                 else {
-                    if(PrintRules) printf("Error: ')' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+                    if(PrintRules) printf("Error Line Number %d: ')' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
                     exit(1);
                 }
             }
             else {
-                if(PrintRules) printf("Error: '(' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+                if(PrintRules) printf("Error Line Number %d: '(' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
                 exit(1);
             }
         }
         else {
-            if(PrintRules) printf("Error: identifier expexted; recived %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            if(PrintRules) printf("Error Line Number %d: identifier expexted; recived %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
             exit(1);
         }
     }
     else {
-        if(PrintRules) printf("Error: 'function' keyword expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: 'function' keyword expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
@@ -191,7 +191,7 @@ void Qualifier(ifstream& codefile) {
         if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
     }
     else {
-        if(PrintRules) printf("Error: 'integer', 'boolean', or 'real' keyword expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: 'integer', 'boolean', or 'real' keyword expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
@@ -211,7 +211,7 @@ void Body(ifstream& codefile) {
             if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
         }
         else {
-            if(PrintRules) printf("Error: '}' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            if(PrintRules) printf("Error Line Number %d: '}' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
             exit(1);
         }
     }
@@ -239,7 +239,7 @@ void DeclarationList(ifstream& codefile) {
         DeclarationList_(codefile);
     }
     else {
-        if(PrintRules) printf("Error: ';' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: ';' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
@@ -274,7 +274,7 @@ void IDs(ifstream& codefile) {
         IDs_(codefile);
     }
     else {
-        if(PrintRules) printf("Error: identifier expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: identifier expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
@@ -341,7 +341,7 @@ void Statement(ifstream& codefile) {
         Compound(codefile);
     }
     else {
-        if(PrintRules) printf("Error: invalid statement; expected '{', identifier, 'if', 'return', 'print', 'scan', or, 'while'; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: invalid statement; expected '{', identifier, 'if', 'return', 'print', 'scan', or, 'while'; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
@@ -361,12 +361,12 @@ void Compound(ifstream& codefile) {
             if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
         }
         else {
-            if(PrintRules) printf("Error: '}' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            if(PrintRules) printf("Error Line Number %d: '}' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
             exit(1);
         }
     }
     else {
-        if(PrintRules) printf("Error: '{' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: '{' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
@@ -390,12 +390,12 @@ void Assign(ifstream& codefile) {
                 if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
             }
             else {
-                if(PrintRules) printf("Error: ';' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+                if(PrintRules) printf("Error Line Number %d: ';' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
                 exit(1);
             }
         }
         else {
-            if(PrintRules) printf("Error: '=' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            if(PrintRules) printf("Error Line Number %d: '=' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
             exit(1);
         }
     }
@@ -419,17 +419,17 @@ void If(ifstream& codefile) {
                 If_(codefile);
             }
             else {
-                if(PrintRules) printf("Error: ')' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+                if(PrintRules) printf("Error Line Number %d: ')' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
                 exit(1);
             }
         }
         else {
-            if(PrintRules) printf("Error: '(' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            if(PrintRules) printf("Error Line Number %d: '(' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
             exit(1);
         }
     }
     else {
-        if(PrintRules) printf("Error: 'if' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: 'if' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
@@ -450,12 +450,12 @@ void If_(ifstream& codefile) {
             if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
         }
         else {
-            if(PrintRules) printf("Error: 'endif' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            if(PrintRules) printf("Error Line Number %d: 'endif' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
             exit(1);
         }
     }
     else {
-        if(PrintRules) printf("Error: 'endif' or 'else' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: 'endif' or 'else' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
@@ -469,7 +469,7 @@ void Return(ifstream& codefile) {
         Return_(codefile);
     }
     else {
-        if(PrintRules) printf("Error: 'return' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: 'return' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
@@ -488,7 +488,7 @@ void Return_(ifstream& codefile) {
             if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
         }
         else {
-            if(PrintRules) printf("Error: ';' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            if(PrintRules) printf("Error Line Number %d: ';' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
             exit(1);
         }
     }
@@ -512,22 +512,22 @@ void Print(ifstream& codefile) {
                     if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
                 }
                 else {
-                    if(PrintRules) printf("Error: ';' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+                    if(PrintRules) printf("Error Line Number %d: ';' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
                     exit(1);
                 }
             }
             else {
-                if(PrintRules) printf("Error: ')' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+                if(PrintRules) printf("Error Line Number %d: ')' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
                 exit(1);
             }
         }
         else {
-            if(PrintRules) printf("Error: '(' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            if(PrintRules) printf("Error Line Number %d: '(' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
             exit(1);
         }
     }
     else {
-        if(PrintRules) printf("Error: 'print' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: 'print' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
@@ -550,22 +550,22 @@ void Scan(ifstream& codefile) {
                     if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
                 }
                 else {
-                    if(PrintRules) printf("Error: ';' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+                    if(PrintRules) printf("Error Line Number %d: ';' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
                     exit(1);
                 }
             }
             else {
-                if(PrintRules) printf("Error: ')' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+                if(PrintRules) printf("Error Line Number %d: ')' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
                 exit(1);
             }
         }
         else {
-            if(PrintRules) printf("Error: '(' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            if(PrintRules) printf("Error Line Number %d: '(' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
             exit(1);
         }
     }
     else {
-        if(PrintRules) printf("Error: 'scan' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: 'scan' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
@@ -589,22 +589,22 @@ void While(ifstream& codefile) {
                     if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
                 }
                 else {
-                    if(PrintRules) printf("Error: 'endwhile' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+                    if(PrintRules) printf("Error Line Number %d: 'endwhile' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
                     exit(1);
                 }
             }
             else {
-                if(PrintRules) printf("Error: ')' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+                if(PrintRules) printf("Error Line Number %d: ')' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
                 exit(1);
             }
         }
         else {
-            if(PrintRules) printf("Error: '(' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            if(PrintRules) printf("Error Line Number %d: '(' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
             exit(1);
         }
     }
     else {
-        if(PrintRules) printf("Error: 'while' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: 'while' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
@@ -633,7 +633,7 @@ void Relop(ifstream& codefile) {
             if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
     }
     else {
-        if(PrintRules) printf("Error: ==,!=, >, <, <=, or => expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: ==,!=, >, <, <=, or => expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
@@ -722,7 +722,7 @@ void Primary(ifstream& codefile) {
             if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
         }
         else {
-            if(PrintRules) printf("Error: ')' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            if(PrintRules) printf("Error Line Number %d: ')' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
             exit(1);
         }
     }
@@ -734,7 +734,7 @@ void Primary(ifstream& codefile) {
                 if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
     }
     else {
-        if(PrintRules) printf("Error: identifier, integer, real, 'true', 'false', or '(' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error Line Number %d: identifier, integer, real, 'true', 'false', or '(' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
@@ -752,7 +752,7 @@ void Primary_(ifstream& codefile) {
             if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
         }
         else {
-            if(PrintRules) printf("Error: ')' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            if(PrintRules) printf("Error Line Number %d: ')' expected; received %s %s", lineNumber, LexemeTokenPair.first, LexemeTokenPair.second);
             exit(1);
         }
     }
