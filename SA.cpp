@@ -456,8 +456,6 @@ void If_(ifstream& codefile) {
 //RULE 19: <Return> -> return <Return'>
 void Return(ifstream& codefile) {
     if(PrintRules) printf("     <Return> -> return <Return'>");
-    LexemeTokenPair = lexer(codefile.get(), codefile);
-    if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
     if(LexemeTokenPair.first == "return") {
         LexemeTokenPair = lexer(codefile.get(), codefile);
         if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
