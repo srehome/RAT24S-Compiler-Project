@@ -593,24 +593,75 @@ void While(ifstream& codefile) {
     }
 }
 
-//RULE 23: <Condition> -> <Expression> <Relop> <Expression>
+//RULE 23: <Condition> ::= <Expression> <Relop> <Expression>
 void Condition(ifstream& codefile) {
-
+    if(PrintRules) printf("     <Condition> ::= <Expression> <Relop> <Expression>");
+    //parse expression
+    Expression(codefile);
+    //parse Relop
+    Relop(codefile);
+    //parse expression
+    Expression(codefile);
 }
 
-//RULE 24: <Relop> -> == | != | > | < | <= | =>
+//RULE 24: <Relop> ::= == |!= | > | < | <= | =>
 void Relop(ifstream& codefile) {
-
+    if(PrintRules) printf("     <Relop> ::= == |!= | > | < | <= | =>");
+    LexemeTokenPair = lexer(codefile.get(), codefile);
+    if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+    if(LexemeTokenPair.first == "==") {
+        //do nothing
+    }
+    else if(LexemeTokenPair.first == "!=") {
+        //do nothing
+    }
+    else if(LexemeTokenPair.first == ">") {
+        //do nothing
+    }
+    else if(LexemeTokenPair.first == "<") {
+        //do nothing
+    }
+    else if(LexemeTokenPair.first == "<=") {
+        //do nothing
+    }
+    else if(LexemeTokenPair.first == ">=") {
+        //do nothing
+    }
+    else {
+        if(PrintRules) printf("Error: Relop expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        exit(1);
+    }
 }
 
 //RULE 25: <Expression> -> <Term> <Expression'>
 void Expression(ifstream& codefile) {
-
+    if(PrintRules) printf("     <Expression> ::= <Term> <Expression'>");
+    //parse term
+    Term(codefile);
+    //parse Expression'
+    Expression_(codefile);
 }
 
 //RULE 25.5: <Expression'> -> + <Term> <Expression'> | - <Term> <Expression'> | ε
 void Expression_(ifstream& codefile) {
-
+    if(PrintRules) printf("     <Expression'> ::= + <Term> <Expression'> | - <Term> <Expression'> | ε");
+    LexemeTokenPair = lexer(codefile.get(), codefile);
+    if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+    if(LexemeTokenPair.first == "+" || LexemeTokenPair.first == "-") {
+        if(LexemeTokenPair.first == "+") {
+            //do nothing
+        }
+        else if(LexemeTokenPair.first == "-") {
+            //do nothing
+        }
+        //parse term
+        Term(codefile);
+        //parse Expression'
+        Expression_(codefile);
+    }
+    else {
+        //epsilon
+    }
 }
 
 //RULE 26: <Term> -> <Factor> <Term'>
