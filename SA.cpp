@@ -8,7 +8,7 @@ const bool PrintRules = true;
 //DECLARATIONS???
 
 
-//RULE 1: <Rat24S> ::= $ <Opt Function Definitions> $ <Opt Declaration List> $ <Statement List> $
+//RULE 1: <Rat24S> -> $ <Opt Function Definitions> $ <Opt Declaration List> $ <Statement List> $
 void RAT24S(ifstream& codefile) {
     LexemeTokenPair = lexer(codefile.get(), codefile);
     if(PrintRules) {
@@ -91,7 +91,7 @@ void FunctionDefinitionsPrime(ifstream& codefile) {
 
 //RULE 4: <Function> -> function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>
 void Function(ifstream& codefile) {
-    if(PrintRules) printf("     <Function> ::= function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>");
+    if(PrintRules) printf("     <Function> -> function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>");
     //check for "function" keyword
     if(LexemeTokenPair.first == "function") {
         LexemeTokenPair = lexer(codefile.get(), codefile);
@@ -137,9 +137,9 @@ void Function(ifstream& codefile) {
     }
 }
 
-//RULE 5: <Opt Parameter List> ::= <Parameter List> | <Empty>
+//RULE 5: <Opt Parameter List> -> <Parameter List> | <Empty>
 void OptParameterList(ifstream& codefile) {
-    if(PrintRules) printf("     <Opt Parameter List> ::= <Parameter List> | <Empty>");
+    if(PrintRules) printf("     <Opt Parameter List> -> <Parameter List> | <Empty>");
     if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean" || LexemeTokenPair.first == "real") {
         ParameterList(codefile);
     }
@@ -157,7 +157,7 @@ void ParameterList(ifstream& codefile) {
 
 //RULE 6.5: <Parameter List'> ->, <Parameter List> | ε
 void ParameterList_(ifstream& codefile) {
-    if(PrintRules) printf("     <Parameter List'> ->, <Parameter List> | ε");
+    if(PrintRules) printf("     <Parameter List'> -> , <Parameter List> | ε");
     if(LexemeTokenPair.first == ",") {
         LexemeTokenPair = lexer(codefile.get(), codefile);
         if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
@@ -168,19 +168,19 @@ void ParameterList_(ifstream& codefile) {
     }
 }
 
-//RULE 7: <Parameter> ::= <IDs> <Qualifier>
+//RULE 7: <Parameter> -> <IDs> <Qualifier>
 void Parameter(ifstream& codefile) {
 
 }
 
-//RULE 8: <Qualifier> ::= integer | boolean | real
+//RULE 8: <Qualifier> -> integer | boolean | real
 void Qualifier(ifstream& codefile) {
 
 }
 
-//RULE 9: <Body> ::= { < Statement List> }
+//RULE 9: <Body> -> { < Statement List> }
 void Body(ifstream& codefile) {
-    if(PrintRules) printf("     <Body> ::= { < Statement List> }");
+    if(PrintRules) printf("     <Body> -> { < Statement List> }");
     //check for "{"
     if(LexemeTokenPair.first == "{") {
         LexemeTokenPair = lexer(codefile.get(), codefile);
@@ -194,21 +194,21 @@ void Body(ifstream& codefile) {
         }
         else {
             if(PrintRules) printf("Error: '}' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-            return;
+            exit(1);
         }
     }
     else {
         if(PrintRules) printf("Error: '{' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
 }
 
-//RULE 10: <Opt Declaration List> ::= <Declaration List> | <Empty>
-void OptDeclarationList(ifstream& codefile, LexemeTokenPair& LexemeTokenPair) {
-    if(PrintRules) printf("     <Opt Declaration List> ::= <Declaration List> | <Empty>");
+//RULE 10: <Opt Declaration List> -> <Declaration List> | <Empty>
+void OptDeclarationList(ifstream& codefile) {
+    if(PrintRules) printf("     <Opt Declaration List> -> <Declaration List> | <Empty>");
     LexemeTokenPair = lexer(codefile.get(), codefile);
     if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean" || LexemeTokenPair.first == "real") {
-        DeclarationList(codefile, LexemeTokenPair);
+        DeclarationList(codefile);
     }
     else {
         //epsilon
@@ -216,40 +216,40 @@ void OptDeclarationList(ifstream& codefile, LexemeTokenPair& LexemeTokenPair) {
 }
 
 //RULE 11: <Declaration List> -> <Declaration> ; <Declaration List'>
-void DeclarationList(ifstream& codefile, LexemeTokenPair& LexemeTokenPair) {
+void DeclarationList(ifstream& codefile) {
     if(PrintRules) printf("     <Declaration List> -> <Declaration> ; <Declaration List'>");
-    Declaration(codefile, LexemeTokenPair);
+    Declaration(codefile);
     //check for ";"
     if(LexemeTokenPair.first == ";") {
         LexemeTokenPair = lexer(codefile.get(), codefile);
         if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
-        DeclarationList_(codefile, LexemeTokenPair);
+        DeclarationList_(codefile);
     }
     else {
         if(PrintRules) printf("Error: ';' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
 }
 
 //RULE 11.5: <Declaration List'> -> <Declaration List> | ε
-void DeclarationList_(ifstream& codefile, LexemeTokenPair& LexemeTokenPair) {
+void DeclarationList_(ifstream& codefile) {
     if(PrintRules) printf("     <Declaration List'> -> <Declaration List> | ε");
     LexemeTokenPair = lexer(codefile.get(), codefile);
     if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean" || LexemeTokenPair.first == "real") {
-        DeclarationList(codefile, LexemeTokenPair);
+        DeclarationList(codefile);
     }
     else {
         //epsilon
     }
 }
 
-//RULE 12: <Declaration> ::= <Qualifier > <IDs>
-void Declaration(ifstream& codefile, LexemeTokenPair& LexemeTokenPair) {
-    if(PrintRules) printf("     <Declaration> ::= <Qualifier > <IDs>");
+//RULE 12: <Declaration> -> <Qualifier > <IDs>
+void Declaration(ifstream& codefile) {
+    if(PrintRules) printf("     <Declaration> -> <Qualifier > <IDs>");
     //parse qualifier
-    Qualifier(codefile, LexemeTokenPair);
+    Qualifier(codefile);
     //parse IDs
-    IDs(codefile, LexemeTokenPair);
+    IDs(codefile);
 }
 
 //RULE 13: <IDs> -> <Identifier> <IDs'>
@@ -272,17 +272,17 @@ void StatementList_(ifstream& codefile) {
 
 }
 
-//RULE 15: <Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Print> | <Scan> | <While>
+//RULE 15: <Statement> -> <Compound> | <Assign> | <If> | <Return> | <Print> | <Scan> | <While>
 void Statement(ifstream& codefile) {
 
 }
 
-//RULE 16: <Compound> ::= { <Statement List> }
+//RULE 16: <Compound> -> { <Statement List> }
 void Compound(ifstream& codefile) {
 
 }
 
-//RULE 17: <Assign> ::= <Identifier> = <Expression> ;
+//RULE 17: <Assign> -> <Identifier> = <Expression> ;
 void Assign(ifstream& codefile) {
 
 }
@@ -307,27 +307,27 @@ void Return_(ifstream& codefile) {
 
 }
 
-//RULE 20: <Print> ::= print ( <Expression>);
+//RULE 20: <Print> -> print ( <Expression>);
 void Print(ifstream& codefile) {
 
 }
 
-//RULE 21: <Scan> ::= scan ( <IDs> );
+//RULE 21: <Scan> -> scan ( <IDs> );
 void Scan(ifstream& codefile) {
 
 }
 
-//RULE 22: <While> ::= while ( <Condition> ) <Statement> endwhile
+//RULE 22: <While> -> while ( <Condition> ) <Statement> endwhile
 void While(ifstream& codefile) {
 
 }
 
-//RULE 23: <Condition> ::= <Expression> <Relop> <Expression>
+//RULE 23: <Condition> -> <Expression> <Relop> <Expression>
 void Condition(ifstream& codefile) {
 
 }
 
-//RULE 24: <Relop> ::= == | != | > | < | <= | =>
+//RULE 24: <Relop> -> == | != | > | < | <= | =>
 void Relop(ifstream& codefile) {
 
 }
@@ -352,7 +352,7 @@ void Term_(ifstream& codefile) {
 
 }
 
-//RULE 27: <Factor> ::= - <Primary> | <Primary>
+//RULE 27: <Factor> -> - <Primary> | <Primary>
 void Factor(ifstream& codefile) {
 
 }
@@ -367,7 +367,7 @@ void Primary_(ifstream& codefile) {
 
 }
 
-//RULE 29: <Empty> ::= ε
+//RULE 29: <Empty> -> ε
 void Empty(ifstream& codefile) {
 
 }
