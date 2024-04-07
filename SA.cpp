@@ -675,17 +675,49 @@ void Expression_(ifstream& codefile) {
 
 //RULE 26: <Term> -> <Factor> <Term'>
 void Term(ifstream& codefile) {
-
+    if(PrintRules) printf("     <Term> ::= <Factor> <Term'>");
+    //parse factor
+    Factor(codefile);
+    //parse Term'
+    Term_(codefile);
 }
 
 //RULE 26.5: <Term'> -> * <Factor> <Term'> | / <Factor> <Term'> | ε
 void Term_(ifstream& codefile) {
-
+    if(PrintRules) printf("     <Term'> ::= * <Factor> <Term'> | / <Factor> <Term'> | ε");
+    LexemeTokenPair = lexer(codefile.get(), codefile);
+    if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+    if(LexemeTokenPair.first == "*" || LexemeTokenPair.first == "/") {
+        if(LexemeTokenPair.first == "*") {
+            //do nothing
+        }
+        else if(LexemeTokenPair.first == "/") {
+            //do nothing
+        }
+        //parse factor
+        Factor(codefile);
+        //parse Term'
+        Term_(codefile);
+    }
+    else {
+        //epsilon
+    }
 }
 
-//RULE 27: <Factor> -> - <Primary> | <Primary>
+//RULE 27: <Factor> ::= - <Primary> | <Primary>
 void Factor(ifstream& codefile) {
-
+    if(PrintRules) printf("     <Factor> ::= - <Primary> | <Primary>");
+    LexemeTokenPair = lexer(codefile.get(), codefile);
+    if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+    if(LexemeTokenPair.first == "-") {
+        //do nothing
+        //parse primary
+        Primary(codefile);
+    }
+    else {
+        //parse primary
+        Primary(codefile);
+    }
 }
 
 //RULE 28: <Primary> -> <Identifier><Primary'> | <Integer> | ( <Expression> ) | <Real> | true | false
