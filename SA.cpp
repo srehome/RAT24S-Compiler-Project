@@ -566,8 +566,6 @@ void Scan(ifstream& codefile) {
 //RULE 22: <While> ::= while ( <Condition> ) <Statement> endwhile
 void While(ifstream& codefile) {
     if(PrintRules) printf("     <While> -> while ( <Condition> ) <Statement> endwhile");
-    LexemeTokenPair = lexer(codefile.get(), codefile);
-    if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
     if(LexemeTokenPair.first == "while") {
         LexemeTokenPair = lexer(codefile.get(), codefile);
         if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
