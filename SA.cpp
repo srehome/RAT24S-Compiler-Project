@@ -295,9 +295,14 @@ void StatementList(ifstream& codefile) {
 //RULE 14.5: <Statement List'> -> <Statement List> | ε
 void StatementList_(ifstream& codefile) {
     if(PrintRules) printf("     <Statement List'> -> <Statement List> | ε");
-    if(LexemeTokenPair.first == "if" || LexemeTokenPair.first == "while" || LexemeTokenPair.first == "print" || LexemeTokenPair.first == "scan" || LexemeTokenPair.first == "{" || isIdentifier(LexemeTokenPair.first)) {
-        Statement(codefile);
-        StatementList_(codefile);
+    if(LexemeTokenPair.first == "{" ||
+        LexemeTokenPair.second == "identifier" ||
+        LexemeTokenPair.first == "if" ||
+        LexemeTokenPair.first == "return" ||
+        LexemeTokenPair.first == "print" ||
+        LexemeTokenPair.first == "scan" ||
+        LexemeTokenPair.first == "while") {
+        StatementList(codefile);
     }
     else {
         //epsilon
