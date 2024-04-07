@@ -140,7 +140,7 @@ void Function(ifstream& codefile) {
 //RULE 5: <Opt Parameter List> -> <Parameter List> | <Empty>
 void OptParameterList(ifstream& codefile) {
     if(PrintRules) printf("     <Opt Parameter List> -> <Parameter List> | <Empty>");
-    if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean" || LexemeTokenPair.first == "real") {
+    if(LexemeTokenPair.second == "identifier") {
         ParameterList(codefile);
     }
     else {
