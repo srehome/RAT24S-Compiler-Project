@@ -261,8 +261,8 @@ void Declaration(ifstream& codefile) {
 void IDs(ifstream& codefile) {
     if(PrintRules) printf("     <IDs> -> <Identifier> <IDs'>");
     //parse identifier
-    Identifier(codefile, LexemeTokenPair);
-    IDs_(codefile, LexemeTokenPair);
+    Identifier(codefile);
+    IDs_(codefile);
 }
 
 //RULE 13.5: <IDs'> ->, <IDs> | ε
@@ -271,7 +271,7 @@ void IDs_(ifstream& codefile) {
     if(LexemeTokenPair.first == ",") {
         LexemeTokenPair = lexer(codefile.get(), codefile);
         if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
-        IDs(codefile, LexemeTokenPair);
+        IDs(codefile);
     }
     else {
         //epsilon
@@ -281,16 +281,16 @@ void IDs_(ifstream& codefile) {
 //RULE 14: <Statement List> -> <Statement> <Statement List'>
 void StatementList(ifstream& codefile) {
     if(PrintRules) printf("     <Statement List> -> <Statement> <Statement List'>");
-    Statement(codefile, LexemeTokenPair);
-    StatementList_(codefile, LexemeTokenPair);
+    Statement(codefile);
+    StatementList_(codefile);
 }
 
 //RULE 14.5: <Statement List'> -> <Statement List> | ε
 void StatementList_(ifstream& codefile) {
     if(PrintRules) printf("     <Statement List'> -> <Statement List> | ε");
     if(LexemeTokenPair.first == "if" || LexemeTokenPair.first == "while" || LexemeTokenPair.first == "print" || LexemeTokenPair.first == "scan" || LexemeTokenPair.first == "{" || isIdentifier(LexemeTokenPair.first)) {
-        Statement(codefile, LexemeTokenPair);
-        StatementList_(codefile, LexemeTokenPair);
+        Statement(codefile);
+        StatementList_(codefile);
     }
     else {
         //epsilon
@@ -301,25 +301,25 @@ void StatementList_(ifstream& codefile) {
 void Statement(ifstream& codefile) {
     if(PrintRules) printf("     <Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Print> | <Scan> | <While>");
     if(LexemeTokenPair.first == "if") {
-        If(codefile, LexemeTokenPair);
+        If(codefile);
     }
     else if(LexemeTokenPair.first == "while") {
-        While(codefile, LexemeTokenPair);
+        While(codefile);
     }
     else if(LexemeTokenPair.first == "print") {
-        Print(codefile, LexemeTokenPair);
+        Print(codefile);
     }
     else if(LexemeTokenPair.first == "scan") {
-        Scan(codefile, LexemeTokenPair);
+        Scan(codefile);
     }
     else if(LexemeTokenPair.first == "return") {
-        Return(codefile, LexemeTokenPair);
+        Return(codefile);
     }
-    else if(isIdentifier(LexemeTokenPair.first)) {
-        Assign(codefile, LexemeTokenPair);
+    else if(LexemeTokenPair.second == "identifier") {
+        Assign(codefile);
     }
     else if(LexemeTokenPair.first == "{") {
-        Body(codefile, LexemeTokenPair);
+        Body(codefile);
     }
     else {
         if(PrintRules) printf("Error: invalid statement; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
@@ -335,7 +335,7 @@ void Compound(ifstream& codefile) {
         LexemeTokenPair = lexer(codefile.get(), codefile);
         if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
         //parse statement list
-        StatementList(codefile, LexemeTokenPair);
+        StatementList(codefile);
         //check for "}"
         if(LexemeTokenPair.first == "}") {
             LexemeTokenPair = lexer(codefile.get(), codefile);
@@ -356,13 +356,13 @@ void Compound(ifstream& codefile) {
 void Assign(ifstream& codefile) {
     if(PrintRules) printf("     <Assign> ::= <Identifier> = <Expression> ;");
     //parse identifier
-    Identifier(codefile, LexemeTokenPair);
+    Identifier(codefile);
     //check for "="
     if(LexemeTokenPair.first == "=") {
         LexemeTokenPair = lexer(codefile.get(), codefile);
         if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
         //parse expression
-        Expression(codefile, LexemeTokenPair);
+        Expression(codefile);
     }
     else {
         if(PrintRules) printf("Error: '=' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
