@@ -24,7 +24,7 @@ void RAT24S(ifstream& codefile) {
     }
     else {
         if(PrintRules) printf("Error: first '$' separator expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
 
     //check second $, call OptDecList, else print error
@@ -35,7 +35,7 @@ void RAT24S(ifstream& codefile) {
     }
     else {
         if(PrintRules) printf("Error: second '$' separator expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
 
     //check third $, call StateList, else print error
@@ -46,7 +46,7 @@ void RAT24S(ifstream& codefile) {
     }
     else {
         if(PrintRules) printf("Error: third '$' separator expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
     
     //check last $, else print error
@@ -55,16 +55,14 @@ void RAT24S(ifstream& codefile) {
         while(!codefile.eof()) {
             if(!isspace(codefile.get()) && !codefile.eof()) {
                 if(PrintRules) printf("Error: eof marker expected, received unexpected characters");
-                return;
+                exit(1);
             }
         }
     }
     else {
         if(PrintRules) printf("Error: last '$' separator expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
-
-    return;
 }
 
 //RULE 2: <Opt Function Definitions> -> <Function Definitions> | <Empty>
@@ -120,22 +118,22 @@ void Function(ifstream& codefile) {
                 }
                 else {
                     if(PrintRules) printf("Error: ')' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-                    return;
+                    exit(1);
                 }
             }
             else {
                 if(PrintRules) printf("Error: '(' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-                return;
+                exit(1);
             }
         }
         else {
             if(PrintRules) printf("Error: identifier expexted; recived %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-            return;
+            exit(1);
         }
     }
     else {
         if(PrintRules) printf("Error: 'function' keyword expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
 }
 
