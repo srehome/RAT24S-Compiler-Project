@@ -3,13 +3,10 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
-#include "LA.cpp"
+#include "SA.cpp"
 
 int main () {
     std::string filename;
-
-    //tokenVector(lexeme, token);
-    std::vector<std::pair<std::string, std::string>> tokenVector; 
 
     //ask user to provide source code text file
     std::cout << "Please enter a source code text filename: ";
@@ -22,33 +19,15 @@ int main () {
     if(!codefile.is_open())
         return -1;
 
-    //create a variable to keep track of current character
-    char mychar = codefile.get();
-
-    //while the file is not at the end, parse tokens, identify them, and add them to the vector
-    while(!codefile.eof()) {
-        //call lexer and add lexeme, token pair to vector
-        tokenVector.push_back(lexer(mychar, codefile));
-        //get next character
-        mychar = codefile.get();
-    }
-
-    //ask user to provide name of output text file
     std::cout << "Please enter an output text filename: ";
     std::cin >> filename;
 
-    //open output text file to write stdout to it
-    freopen(filename.c_str(), "w", stdout );
-
-    std::cout << std::left << setw(15) << "Token" << "Lexeme" << std::endl;
-    std::cout << "---------------------" << std::endl;
-
-    //iterate through the vector and print contents to output file
-    for(std::pair<std::string, std::string> token : tokenVector){
-        std::cout << std::left << setw(15) << token.second << token.first << std::endl;
-    }
+    FILE *outfile;
+    outfile = fopen(filename.c_str(), "w");
     
-    freopen("CON", "w", stdout);    //fclose (stdout);
+    RAT24S(codefile, outfile);
+
+    fclose(outfile); //close
 
     return 0;
 }
