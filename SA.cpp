@@ -740,7 +740,23 @@ void Primary(ifstream& codefile) {
 //RULE 28.5: <Primary'> -> ( <IDs> ) | <Empty>
 void Primary_(ifstream& codefile) {
     if(PrintRules) printf("     <Primary'> -> ( <IDs> ) | <Empty>");
-
+    if(LexemeTokenPair.first == "(") {
+        LexemeTokenPair = lexer(codefile.get(), codefile);
+        if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+        //parse IDs
+        IDs(codefile);
+        if(LexemeTokenPair.first == ")") {
+            LexemeTokenPair = lexer(codefile.get(), codefile);
+            if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+        }
+        else {
+            if(PrintRules) printf("Error: ')' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            exit(1);
+        }
+    }
+    else {
+        Empty();
+    }
 }
 
 //RULE 29: <Empty> -> ε
