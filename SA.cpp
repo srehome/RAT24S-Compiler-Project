@@ -80,7 +80,6 @@ void FunctionDefinitions(ifstream& codefile) {
     FunctionDefinitionsPrime(codefile);
 }
 
-
 //RULE 3.5: <Function Definitions'> -> <Function Definitions> | ε
 void FunctionDefinitionsPrime(ifstream& codefile) {
     if(PrintRules) printf("     <Function Definitions'> -> <Function Definitions> | ε");
@@ -158,7 +157,7 @@ void ParameterList(ifstream& codefile) {
     ParameterList_(codefile);
 }
 
-//RULE 6.5: <Parameter List'> -> , <Parameter List> | ε
+//RULE 6.5: <Parameter List'> ->, <Parameter List> | ε
 void ParameterList_(ifstream& codefile) {
     if(PrintRules) printf("     <Parameter List'> ->, <Parameter List> | ε");
     if(LexemeTokenPair.first == ",") {
