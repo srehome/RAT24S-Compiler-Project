@@ -190,7 +190,7 @@ void Qualifier(ifstream& codefile) {
 
 //RULE 9: <Body> ::= { < Statement List> }
 void Body(ifstream& codefile) {
-    if(PrintRules) printf("     <Body> ::= { < Statement List> }");
+    if(PrintRules) printf("     <Body> -> { < Statement List> }");
     //check for "{"
     LexemeTokenPair = lexer(codefile.get(), codefile);
     if(LexemeTokenPair.first == "{") {
@@ -211,7 +211,7 @@ void Body(ifstream& codefile) {
 
 //RULE 10: <Opt Declaration List> ::= <Declaration List> | <Empty>
 void OptDeclarationList(ifstream& codefile) {
-    if(PrintRules) printf("     <Opt Declaration List> ::= <Declaration List> | <Empty>");
+    if(PrintRules) printf("     <Opt Declaration List> -> <Declaration List> | <Empty>");
     if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean" || LexemeTokenPair.first == "real") {
         DeclarationList(codefile);
     }
@@ -250,7 +250,7 @@ void DeclarationList_(ifstream& codefile) {
 
 //RULE 12: <Declaration> ::= <Qualifier > <IDs>
 void Declaration(ifstream& codefile) {
-    if(PrintRules) printf("     <Declaration> ::= <Qualifier > <IDs>");
+    if(PrintRules) printf("     <Declaration> -> <Qualifier > <IDs>");
     //parse qualifier
     Qualifier(codefile);
     //parse IDs
@@ -311,7 +311,7 @@ void StatementList_(ifstream& codefile) {
 
 //RULE 15: <Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Print> | <Scan> | <While>
 void Statement(ifstream& codefile) {
-    if(PrintRules) printf("     <Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Print> | <Scan> | <While>");
+    if(PrintRules) printf("     <Statement> -> <Compound> | <Assign> | <If> | <Return> | <Print> | <Scan> | <While>");
     if(LexemeTokenPair.first == "if") {
         If(codefile);
     }
@@ -341,7 +341,7 @@ void Statement(ifstream& codefile) {
 
 //RULE 16: <Compound> ::= { <Statement List> }
 void Compound(ifstream& codefile) {
-    if(PrintRules) printf("     <Compound> ::= { <Statement List> }");
+    if(PrintRules) printf("     <Compound> -> { <Statement List> }");
     //check for "{"
     if(LexemeTokenPair.first == "{") {
         LexemeTokenPair = lexer(codefile.get(), codefile);
@@ -366,7 +366,7 @@ void Compound(ifstream& codefile) {
 
 //RULE 17: <Assign> ::= <Identifier> = <Expression> ;
 void Assign(ifstream& codefile) {
-    if(PrintRules) printf("     <Assign> ::= <Identifier> = <Expression> ;");
+    if(PrintRules) printf("     <Assign> -> <Identifier> = <Expression> ;");
     //parse identifier
     if(LexemeTokenPair.second == "identifier") {
         LexemeTokenPair = lexer(codefile.get(), codefile);
