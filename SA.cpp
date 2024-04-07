@@ -397,7 +397,7 @@ void Assign(ifstream& codefile) {
 
 //RULE 18: <If> -> if ( <Condition> ) <Statement> <If'>
 void If(ifstream& codefile) {
-    if(PrintRules) printf("     <If> ::= if ( <Condition> ) <Statement> <If'>");
+    if(PrintRules) printf("     <If> -> if ( <Condition> ) <Statement> <If'>");
     LexemeTokenPair = lexer(codefile.get(), codefile);
     if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
     if(LexemeTokenPair.first == "if") {
@@ -431,7 +431,7 @@ void If(ifstream& codefile) {
 
 //RULE 18.5: <If'> -> endif | else <Statement> endif
 void If_(ifstream& codefile) {
-    if(PrintRules) printf("     <If'> ::= endif | else <Statement> endif");
+    if(PrintRules) printf("     <If'> -> endif | else <Statement> endif");
     if(LexemeTokenPair.first == "endif") {
         //do nothing
     }
@@ -456,7 +456,7 @@ void If_(ifstream& codefile) {
 
 //RULE 19: <Return> -> return <Return'>
 void Return(ifstream& codefile) {
-    if(PrintRules) printf("     <Return> ::= return <Return'>");
+    if(PrintRules) printf("     <Return> -> return <Return'>");
     LexemeTokenPair = lexer(codefile.get(), codefile);
     if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
     if(LexemeTokenPair.first == "return") {
@@ -472,7 +472,7 @@ void Return(ifstream& codefile) {
 
 //RULE 19.5: <Return'> -> ; | <Expression>;
 void Return_(ifstream& codefile) {
-    if(PrintRules) printf("     <Return'> ::= ; | <Expression>;");
+    if(PrintRules) printf("     <Return'> -> ; | <Expression>;");
     if(LexemeTokenPair.first == ";") {
         LexemeTokenPair = lexer(codefile.get(), codefile);
         if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
@@ -492,7 +492,7 @@ void Return_(ifstream& codefile) {
 
 //RULE 20: <Print> ::= print ( <Expression>);
 void Print(ifstream& codefile) {
-    if(PrintRules) printf("     <Print> ::= print ( <Expression>);");
+    if(PrintRules) printf("     <Print> -> print ( <Expression>);");
     LexemeTokenPair = lexer(codefile.get(), codefile);
     if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
     if(LexemeTokenPair.first == "print") {
@@ -524,7 +524,7 @@ void Print(ifstream& codefile) {
 
 //RULE 21: <Scan> ::= scan ( <IDs> );
 void Scan(ifstream& codefile) {
-    if(PrintRules) printf("     <Scan> ::= scan ( <IDs> );");
+    if(PrintRules) printf("     <Scan> -> scan ( <IDs> );");
     LexemeTokenPair = lexer(codefile.get(), codefile);
     if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
     if(LexemeTokenPair.first == "scan") {
@@ -556,7 +556,7 @@ void Scan(ifstream& codefile) {
 
 //RULE 22: <While> ::= while ( <Condition> ) <Statement> endwhile
 void While(ifstream& codefile) {
-    if(PrintRules) printf("     <While> ::= while ( <Condition> ) <Statement> endwhile");
+    if(PrintRules) printf("     <While> -> while ( <Condition> ) <Statement> endwhile");
     LexemeTokenPair = lexer(codefile.get(), codefile);
     if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
     if(LexemeTokenPair.first == "while") {
