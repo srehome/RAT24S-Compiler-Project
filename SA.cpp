@@ -703,11 +703,43 @@ void Factor(ifstream& codefile) {
 
 //RULE 28: <Primary> -> <Identifier><Primary'> | <Integer> | ( <Expression> ) | <Real> | true | false
 void Primary(ifstream& codefile) {
-
+    if(PrintRules) printf("     <Primary> -> <Identifier><Primary'> | <Integer> | ( <Expression> ) | <Real> | true | false");
+    if(LexemeTokenPair.second == "identifier") {
+        LexemeTokenPair = lexer(codefile.get(), codefile);
+        if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+        //parse primary'
+        Primary_(codefile);
+    }
+    else if(LexemeTokenPair.first == "(") {
+        LexemeTokenPair = lexer(codefile.get(), codefile);
+        if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+        //parse expression
+        Expression(codefile);
+        if(LexemeTokenPair.first == ")") {
+            LexemeTokenPair = lexer(codefile.get(), codefile);
+            if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+        }
+        else {
+            if(PrintRules) printf("Error: ')' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            exit(1);
+        }
+    }
+    else if(LexemeTokenPair.second == "integer" ||
+            LexemeTokenPair.second == "real" ||
+            LexemeTokenPair.first == "true" ||
+            LexemeTokenPair.first == "false") {
+                LexemeTokenPair = lexer(codefile.get(), codefile);
+                if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+    }
+    else {
+        if(PrintRules) printf("Error: identifier, integer, real, 'true', 'false', or '(' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        exit(1);
+    }
 }
 
 //RULE 28.5: <Primary'> -> ( <IDs> ) | <Empty>
 void Primary_(ifstream& codefile) {
+    if(PrintRules) printf("     <Primary'> -> ( <IDs> ) | <Empty>");
 
 }
 
