@@ -30,7 +30,7 @@ $
 					exponent=exponent-1;
 				}endwhile
 			return product;
-			}
+			} endif
 			
 		if (exponent <= -1)
 			{
@@ -40,7 +40,7 @@ $
 					exponent=exponent+1;
 				} endwhile
 			return product;
-			}
+			} endif
 			
 		return 0;
 	}
