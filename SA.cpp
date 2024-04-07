@@ -684,12 +684,8 @@ void Term(ifstream& codefile) {
 void Term_(ifstream& codefile) {
     if(PrintRules) printf("     <Term'> ::= * <Factor> <Term'> | / <Factor> <Term'> | ε");
     if(LexemeTokenPair.first == "*" || LexemeTokenPair.first == "/") {
-        if(LexemeTokenPair.first == "*") {
-            //do nothing
-        }
-        else if(LexemeTokenPair.first == "/") {
-            //do nothing
-        }
+        LexemeTokenPair = lexer(codefile.get(), codefile);
+        if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
         //parse factor
         Factor(codefile);
         //parse Term'
