@@ -398,8 +398,6 @@ void Assign(ifstream& codefile) {
 //RULE 18: <If> -> if ( <Condition> ) <Statement> <If'>
 void If(ifstream& codefile) {
     if(PrintRules) printf("     <If> -> if ( <Condition> ) <Statement> <If'>");
-    LexemeTokenPair = lexer(codefile.get(), codefile);
-    if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
     if(LexemeTokenPair.first == "if") {
         LexemeTokenPair = lexer(codefile.get(), codefile);
         if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
@@ -415,17 +413,17 @@ void If(ifstream& codefile) {
             }
             else {
                 if(PrintRules) printf("Error: ')' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-                return;
+                exit(1);
             }
         }
         else {
             if(PrintRules) printf("Error: '(' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-            return;
+            exit(1);
         }
     }
     else {
         if(PrintRules) printf("Error: 'if' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
 }
 
@@ -445,12 +443,12 @@ void If_(ifstream& codefile) {
         }
         else {
             if(PrintRules) printf("Error: 'endif' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-            return;
+            exit(1);
         }
     }
     else {
         if(PrintRules) printf("Error: 'endif' or 'else' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
 }
 
@@ -466,7 +464,7 @@ void Return(ifstream& codefile) {
     }
     else {
         if(PrintRules) printf("Error: 'return' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
 }
 
@@ -485,7 +483,7 @@ void Return_(ifstream& codefile) {
         }
         else {
             if(PrintRules) printf("Error: ';' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-            return;
+            exit(1);
         }
     }
 }
@@ -508,17 +506,17 @@ void Print(ifstream& codefile) {
             }
             else {
                 if(PrintRules) printf("Error: ')' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-                return;
+                exit(1);
             }
         }
         else {
             if(PrintRules) printf("Error: '(' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-            return;
+            exit(1);
         }
     }
     else {
         if(PrintRules) printf("Error: 'print' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
 }
 
@@ -540,17 +538,17 @@ void Scan(ifstream& codefile) {
             }
             else {
                 if(PrintRules) printf("Error: ')' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-                return;
+                exit(1);
             }
         }
         else {
             if(PrintRules) printf("Error: '(' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-            return;
+            exit(1);
         }
     }
     else {
         if(PrintRules) printf("Error: 'scan' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
 }
 
@@ -576,22 +574,22 @@ void While(ifstream& codefile) {
                 }
                 else {
                     if(PrintRules) printf("Error: 'endwhile' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-                    return;
+                    exit(1);
                 }
             }
             else {
                 if(PrintRules) printf("Error: ')' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-                return;
+                exit(1);
             }
         }
         else {
             if(PrintRules) printf("Error: '(' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-            return;
+            exit(1);
         }
     }
     else {
         if(PrintRules) printf("Error: 'while' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        return;
+        exit(1);
     }
 }
 
