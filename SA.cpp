@@ -170,12 +170,22 @@ void ParameterList_(ifstream& codefile) {
 
 //RULE 7: <Parameter> -> <IDs> <Qualifier>
 void Parameter(ifstream& codefile) {
-
+    if(PrintRules) printf("<Parameter> -> <IDs> <Qualifier>");
+    IDs(codefile);
+    Qualifier(codefile);
 }
 
 //RULE 8: <Qualifier> -> integer | boolean | real
 void Qualifier(ifstream& codefile) {
-
+    if(PrintRules) printf("<Qualifier> -> integer | boolean | real");
+    if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean" || LexemeTokenPair.first == "real") {
+        LexemeTokenPair = lexer(codefile.get(), codefile);
+        if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+    }
+    else {
+        if(PrintRules) printf("Error: 'integer', 'boolean', or 'real' keyword expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        exit(1);
+    }
 }
 
 //RULE 9: <Body> -> { < Statement List> }
