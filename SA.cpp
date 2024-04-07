@@ -616,28 +616,17 @@ void Condition(ifstream& codefile) {
 //RULE 24: <Relop> ::= == |!= | > | < | <= | =>
 void Relop(ifstream& codefile) {
     if(PrintRules) printf("     <Relop> ::= == |!= | > | < | <= | =>");
-    LexemeTokenPair = lexer(codefile.get(), codefile);
-    if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
-    if(LexemeTokenPair.first == "==") {
-        //do nothing
-    }
-    else if(LexemeTokenPair.first == "!=") {
-        //do nothing
-    }
-    else if(LexemeTokenPair.first == ">") {
-        //do nothing
-    }
-    else if(LexemeTokenPair.first == "<") {
-        //do nothing
-    }
-    else if(LexemeTokenPair.first == "<=") {
-        //do nothing
-    }
-    else if(LexemeTokenPair.first == ">=") {
-        //do nothing
+    if(LexemeTokenPair.first == "==" ||
+        LexemeTokenPair.first == "!=" ||
+        LexemeTokenPair.first == ">" ||
+        LexemeTokenPair.first == "<" ||
+        LexemeTokenPair.first == "<=" ||
+        LexemeTokenPair.first == ">=") {
+            LexemeTokenPair = lexer(codefile.get(), codefile);
+            if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
     }
     else {
-        if(PrintRules) printf("Error: Relop expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error: ==,!=, >, <, <=, or => expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
