@@ -331,10 +331,10 @@ void Statement(ifstream& codefile) {
         Assign(codefile);
     }
     else if(LexemeTokenPair.first == "{") {
-        Body(codefile);
+        Compound(codefile);
     }
     else {
-        if(PrintRules) printf("Error: invalid statement; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+        if(PrintRules) printf("Error: invalid statement; expected '{', identifier, 'if', 'return', 'print', 'scan', or, 'while'; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
         exit(1);
     }
 }
