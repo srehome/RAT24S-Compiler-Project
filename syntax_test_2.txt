@@ -10,9 +10,9 @@ $
 $
 	scan (boohoo, eminem);
 	
-	if (boohoo)
+	if (boohoo == true)
 	tupac = -1;
-	endif;
+	endif
 	
 	if (tupac == -1)
 		if (eminem == true)

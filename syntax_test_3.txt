@@ -6,8 +6,8 @@ $
 	}
 	
 	function average (apple integer, banana integer, cactus integer)
+	integer count;
 	{
-		integer count;
 		count = 3;
 		return sum(apple, banana, cactus)/count;
 	}
@@ -18,30 +18,30 @@ $
 	}
 	
 	function exponential (base real, exponent real)
+	real product;
 	{
-		real product;
 		product = 1;
 		if (exponent==0) return 1; endif
-		
+
 		if (exponent => 1)
 			{
 				while(exponent=>1)
 				{
-				product=product*real;
+				product=product*base;
 				exponent=exponent-1;
 				}endwhile
 			return product;
-			}
+			} endif
 			
 		if (exponent <= -1)
 			{
 				while(exponent=>1)
 				{
-				product=product/real;
+				product=product/base;
 				exponent=exponent+1;
 				}endwhile
 			return product;
-			}
+			} endif
 			
 		return 0;
 	}

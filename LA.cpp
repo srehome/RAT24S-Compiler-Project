@@ -116,6 +116,7 @@ pair<string, string> lexer(char mychar, ifstream &codefile, int &linenumber) {
         //get next character
         mychar = codefile.get();
     }
+    return std::make_pair("", "EOF");
 }
 
 
@@ -149,7 +150,7 @@ string ID_FSM(char mychar, ifstream &codefile) {
     }
     
     //if current character isn't whitespace, move file pointer back 1
-    if(!isspace(mychar))
+    //if(!isspace(mychar))
         codefile.unget();
 
     //check if accepting state
@@ -190,7 +191,7 @@ pair<string, string> Int_Real_DFSM(char mychar, ifstream& codefile)
     }
 
     //if current character isn't whitespace, move file pointer back 1
-    if (!isspace(mychar))
+    //if (!isspace(mychar))
         codefile.unget();       //ungets illegal characters including second '.'
 
 
