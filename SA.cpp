@@ -368,27 +368,31 @@ void Compound(ifstream& codefile) {
 void Assign(ifstream& codefile) {
     if(PrintRules) printf("     <Assign> ::= <Identifier> = <Expression> ;");
     //parse identifier
-    Identifier(codefile);
-    //check for "="
-    if(LexemeTokenPair.first == "=") {
+    if(LexemeTokenPair.second == "identifier") {
         LexemeTokenPair = lexer(codefile.get(), codefile);
         if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
-        //parse expression
-        Expression(codefile);
+        //check for "="
+        if(LexemeTokenPair.first == "=") {
+            LexemeTokenPair = lexer(codefile.get(), codefile);
+            if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+            //parse expression
+            Expression(codefile);
+            //check for ";"
+            if(LexemeTokenPair.first == ";") {
+                LexemeTokenPair = lexer(codefile.get(), codefile);
+                if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
+            }
+            else {
+                if(PrintRules) printf("Error: ';' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+                exit(1);
+            }
+        }
+        else {
+            if(PrintRules) printf("Error: '=' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
+            exit(1);
+        }
     }
-    else {
-        if(PrintRules) printf("Error: '=' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        exit(1);
-    }
-    //check for ";"
-    if(LexemeTokenPair.first == ";") {
-        LexemeTokenPair = lexer(codefile.get(), codefile);
-        if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
-    }
-    else {
-        if(PrintRules) printf("Error: ';' expected; received %s %s", LexemeTokenPair.first, LexemeTokenPair.second);
-        exit(1);
-    }
+    
 }
 
 //RULE 18: <If> -> if ( <Condition> ) <Statement> <If'>
