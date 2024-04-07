@@ -704,7 +704,8 @@ void Term_(ifstream& codefile) {
 void Factor(ifstream& codefile) {
     if(PrintRules) printf("     <Factor> ::= - <Primary> | <Primary>");
     if(LexemeTokenPair.first == "-") {
-        //do nothing
+        LexemeTokenPair = lexer(codefile.get(), codefile);
+        if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
         //parse primary
         Primary(codefile);
     }
