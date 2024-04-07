@@ -477,7 +477,7 @@ void Return_(ifstream& codefile) {
     else {
         Expression(codefile);
         if(LexemeTokenPair.first == ";") {
-            LexemeTokenPair =lexer(codefile.get(), codefile);
+            LexemeTokenPair = lexer(codefile.get(), codefile);
             if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
         }
         else {
@@ -490,8 +490,6 @@ void Return_(ifstream& codefile) {
 //RULE 20: <Print> ::= print ( <Expression>);
 void Print(ifstream& codefile) {
     if(PrintRules) printf("     <Print> -> print ( <Expression>);");
-    LexemeTokenPair = lexer(codefile.get(), codefile);
-    if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
     if(LexemeTokenPair.first == "print") {
         LexemeTokenPair = lexer(codefile.get(), codefile);
         if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
