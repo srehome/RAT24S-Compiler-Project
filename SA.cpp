@@ -212,9 +212,8 @@ void Body(ifstream& codefile) {
 //RULE 10: <Opt Declaration List> ::= <Declaration List> | <Empty>
 void OptDeclarationList(ifstream& codefile) {
     if(PrintRules) printf("     <Opt Declaration List> ::= <Declaration List> | <Empty>");
-    LexemeTokenPair = lexer(codefile.get(), codefile);
     if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean" || LexemeTokenPair.first == "real") {
-        DeclarationList(codefile, LexemeTokenPair);
+        DeclarationList(codefile);
     }
     else {
         //epsilon
