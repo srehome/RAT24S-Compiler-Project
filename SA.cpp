@@ -655,12 +655,8 @@ void Expression(ifstream& codefile) {
 void Expression_(ifstream& codefile) {
     if(PrintRules) printf("     <Expression'> ::= + <Term> <Expression'> | - <Term> <Expression'> | ε");
     if(LexemeTokenPair.first == "+" || LexemeTokenPair.first == "-") {
-        if(LexemeTokenPair.first == "+") {
-            //do nothing
-        }
-        else if(LexemeTokenPair.first == "-") {
-            //do nothing
-        }
+        LexemeTokenPair = lexer(codefile.get(), codefile);
+        if(PrintRules) printf("Token: %s     Lexeme: %s", LexemeTokenPair.second, LexemeTokenPair.first);
         //parse term
         Term(codefile);
         //parse Expression'
