@@ -7,7 +7,6 @@ $
 	
 	function average (apple integer, banana integer, cactus integer)
 	integer count;
-	{
 		count = 3;
 	{
 		return sum(apple, banana, cactus)/count;
