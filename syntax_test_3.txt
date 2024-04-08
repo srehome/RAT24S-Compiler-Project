@@ -21,7 +21,6 @@ $
 	real product;
 	{
 		product = 1;
-	{
 		if (exponent==0) return 1; endif
 
 		if (exponent => 1)
