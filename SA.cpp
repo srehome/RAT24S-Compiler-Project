@@ -65,7 +65,7 @@ void RAT24S(ifstream& codefile, FILE *outfile) {
         OptFunctionDefinitions(codefile, outfile);
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: first '$' separator expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator before Optional Function Definitions\n   Expected: separator '$'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 
@@ -76,7 +76,7 @@ void RAT24S(ifstream& codefile, FILE *outfile) {
         OptDeclarationList(codefile, outfile);
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: second '$' separator expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator between Optional Function Definitions and Optional Declaration List\n   Expected: separator '$'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 
@@ -87,7 +87,7 @@ void RAT24S(ifstream& codefile, FILE *outfile) {
         StatementList(codefile, outfile);
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: third '$' separator expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator between Optional Declaration List and Statement List\n   Expected: separator '$'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
     
@@ -96,13 +96,13 @@ void RAT24S(ifstream& codefile, FILE *outfile) {
         //check if eof (loop through spaces?), else error
         while(!codefile.eof()) {
             if(!isspace(codefile.get()) && !codefile.eof()) {
-                if(PrintRules) fprintf(outfile, "Error Line Number %d: eof marker expected, received unexpected characters", lineNumber);
+                if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Expected: eof marker\n   Received: unexpected characters", lineNumber);
                 exit(1);
             }
         }
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: last '$' separator expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after Statement List\n   Expected: separator '$'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -164,22 +164,22 @@ void Function(ifstream& codefile, FILE *outfile) {
                     Body(codefile, outfile);
                 }
                 else {
-                    if(PrintRules) fprintf(outfile, "Error Line Number %d: ')' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+                    if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after function Optional Parameter List\n   Expected: separator ')'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                     exit(1);
                 }
             }
             else {
-                if(PrintRules) fprintf(outfile, "Error Line Number %d: '(' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+                if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator before function Optional Parameter List\n   Expected: separator '('\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                 exit(1);
             }
         }
         else {
-            if(PrintRules) fprintf(outfile, "Error Line Number %d: identifier expexted; recived %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+            if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing identifier for function\n   Expected: identifier\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             exit(1);
         }
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: 'function' keyword expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing keyword to begin function\n   Expected: keyword 'function'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -230,7 +230,7 @@ void Qualifier(ifstream& codefile, FILE *outfile) {
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: 'integer', 'boolean', or 'real' keyword expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing keyword for qualifier\n   Expected: keyword 'integer', 'boolean', or 'real'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -250,7 +250,7 @@ void Body(ifstream& codefile, FILE *outfile) {
             if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         }
         else {
-            if(PrintRules) fprintf(outfile, "Error Line Number %d: '}' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+            if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after function body\n   Expected: separator '}'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             exit(1);
         }
     }
@@ -278,7 +278,7 @@ void DeclarationList(ifstream& codefile, FILE *outfile) {
         DeclarationList_(codefile, outfile);
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: ';' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after declaration\n   Expected: separator ';'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -313,7 +313,7 @@ void IDs(ifstream& codefile, FILE *outfile) {
         IDs_(codefile, outfile);
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: identifier expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing identifier in IDs\n   Expected: identifier\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -380,7 +380,7 @@ void Statement(ifstream& codefile, FILE *outfile) {
         Compound(codefile, outfile);
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: invalid statement; expected '{', identifier, 'if', 'return', 'print', 'scan', or, 'while'; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Invalid token to begin statement\n   Expected: '{', identifier, 'if', 'return', 'print', 'scan', 'while'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -400,12 +400,12 @@ void Compound(ifstream& codefile, FILE *outfile) {
             if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         }
         else {
-            if(PrintRules) fprintf(outfile, "Error Line Number %d: '}' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+            if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after statement list in compound\n   Expected: separator '}'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             exit(1);
         }
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: '{' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator before statement list in compound\n   Expected: separator '{'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -429,12 +429,12 @@ void Assign(ifstream& codefile, FILE *outfile) {
                 if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             }
             else {
-                if(PrintRules) fprintf(outfile, "Error Line Number %d: ';' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+                if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after expression in assign\n   Expected: separator ';'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                 exit(1);
             }
         }
         else {
-            if(PrintRules) fprintf(outfile, "Error Line Number %d: '=' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+            if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing operator after identifier in assign\n   Expected: operator '='\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             exit(1);
         }
     }
@@ -458,17 +458,17 @@ void If(ifstream& codefile, FILE *outfile) {
                 If_(codefile, outfile);
             }
             else {
-                if(PrintRules) fprintf(outfile, "Error Line Number %d: ')' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+                if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after condition in if-statement\n   Expected: separator ')'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                 exit(1);
             }
         }
         else {
-            if(PrintRules) fprintf(outfile, "Error Line Number %d: '(' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+            if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after if\n   Expected: separator '('\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             exit(1);
         }
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: 'if' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing keyword if\n   Expected: keyword 'if'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -489,12 +489,12 @@ void If_(ifstream& codefile, FILE *outfile) {
             if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         }
         else {
-            if(PrintRules) fprintf(outfile, "Error Line Number %d: 'endif' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+            if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing keyword to end if-statement\n   Expected: keyword 'endif'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             exit(1);
         }
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: 'endif' or 'else' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing keyword to end or extend if-statement\n   Expected: keyword 'endif' or 'else'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -508,7 +508,7 @@ void Return(ifstream& codefile, FILE *outfile) {
         Return_(codefile, outfile);
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: 'return' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing keyword for return-statement\n   Expected: keyword 'return'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -527,7 +527,7 @@ void Return_(ifstream& codefile, FILE *outfile) {
             if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         }
         else {
-            if(PrintRules) fprintf(outfile, "Error Line Number %d: ';' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+            if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after expression in return-statement\n   Expected: separator ';'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             exit(1);
         }
     }
@@ -535,7 +535,7 @@ void Return_(ifstream& codefile, FILE *outfile) {
 
 //RULE 20: <Print> -> print ( <Expression>);
 void Print(ifstream& codefile, FILE *outfile) {
-    if(PrintRules) fprintf(outfile, "     <Print> -> print ( <Expression>);\n");
+    if(PrintRules) fprintf(outfile, "     <Print> -> print ( <Expression> );\n");
     if(LexemeTokenPair.first == "print") {
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
@@ -551,22 +551,22 @@ void Print(ifstream& codefile, FILE *outfile) {
                     if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                 }
                 else {
-                    if(PrintRules) fprintf(outfile, "Error Line Number %d: ';' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+                    if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after print-statement\n   Expected: separator ';'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                     exit(1);
                 }
             }
             else {
-                if(PrintRules) fprintf(outfile, "Error Line Number %d: ')' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+                if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after expression in print-statement\n   Expected: separator ')'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                 exit(1);
             }
         }
         else {
-            if(PrintRules) fprintf(outfile, "Error Line Number %d: '(' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+            if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after print in print-statement\n   Expected: separator '('\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             exit(1);
         }
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: 'print' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing keyword for print-statement\n   Expected: keyword 'print'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -589,22 +589,22 @@ void Scan(ifstream& codefile, FILE *outfile) {
                     if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                 }
                 else {
-                    if(PrintRules) fprintf(outfile, "Error Line Number %d: ';' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+                    if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after scan-statement\n   Expected: separator ';'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                     exit(1);
                 }
             }
             else {
-                if(PrintRules) fprintf(outfile, "Error Line Number %d: ')' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+                if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after IDs in scan-statement\n   Expected: separator ')'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                 exit(1);
             }
         }
         else {
-            if(PrintRules) fprintf(outfile, "Error Line Number %d: '(' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+            if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after scan\n   Expected: separator '('\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             exit(1);
         }
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: 'scan' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing keyword in scan-statement\n   Expected: keyword 'scan'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -628,22 +628,22 @@ void While(ifstream& codefile, FILE *outfile) {
                     if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                 }
                 else {
-                    if(PrintRules) fprintf(outfile, "Error Line Number %d: 'endwhile' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+                    if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing keyword to end while-statement\n   Expected: keyword 'endwhile'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                     exit(1);
                 }
             }
             else {
-                if(PrintRules) fprintf(outfile, "Error Line Number %d: ')' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+                if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after condition in while-statement\n   Expected: separator ')'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                 exit(1);
             }
         }
         else {
-            if(PrintRules) fprintf(outfile, "Error Line Number %d: '(' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+            if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after while\n   Expected: separator '('\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             exit(1);
         }
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: 'while' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing keyword for while-statement\n   Expected: keyword 'while'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -672,7 +672,7 @@ void Relop(ifstream& codefile, FILE *outfile) {
             if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: ==,!=, >, <, <=, or => expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Wrong token for relop\n   Expected: operator ==,!=, >, <, <=, or =>\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -761,7 +761,7 @@ void Primary(ifstream& codefile, FILE *outfile) {
             if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         }
         else {
-            if(PrintRules) fprintf(outfile, "Error Line Number %d: ')' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+            if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after primary expression\n   Expected: separator ')'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             exit(1);
         }
     }
@@ -773,7 +773,7 @@ void Primary(ifstream& codefile, FILE *outfile) {
                 if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d: expected identifier, integer, real, 'true', 'false', or '('; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Wrong token for primary\n   Expected: identifier, integer, real, 'true', 'false', or '('\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -791,7 +791,7 @@ void Primary_(ifstream& codefile, FILE *outfile) {
             if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         }
         else {
-            if(PrintRules) fprintf(outfile, "Error Line Number %d: ')' expected; received %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+            if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after IDs in primary\n   Expected: separator ')'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             exit(1);
         }
     }
