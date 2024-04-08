@@ -9,7 +9,6 @@ $
 	integer count;
 	{
 		count = 3;
-	{
 		return sum(apple, banana, cactus)/count;
 	}
 	
@@ -22,7 +21,6 @@ $
 	real product;
 	{
 		product = 1;
-	{
 		if (exponent==0) return 1; endif
 
 		if (exponent => 1)
