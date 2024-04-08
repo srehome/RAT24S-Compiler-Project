@@ -31,3 +31,5 @@ int main () {
 
     return 0;
 }
+
+//NOTE: compile in Windows terminal using g++ -g -static main.cpp -o main2.exe
