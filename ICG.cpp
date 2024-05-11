@@ -7,6 +7,12 @@ std::pair<string, string> LexemeTokenPair;
 const bool PrintRules = true;
 int line = 1;
 int& lineNumber = line;
+int memory_address = 5000;
+//vector<int> memory;           //store memory values; NOTE memory[MemoryLocation-5000]
+//vector<int> stack;
+string symbol_table[100][3];    //Identifier, MemoryLocation, Type
+int instr_address = 0;
+string instr_table[1000][3];    //Address, Operator (assembly instruction), Operand (register)
 
 //DECLARATIONS
 void RAT24S(ifstream& codefile, FILE *outfile);
@@ -40,6 +46,26 @@ void Factor(ifstream& codefile, FILE *outfile); //27
 void Primary(ifstream& codefile, FILE *outfile); //28
 void Primary_(ifstream& codefile, FILE *outfile); //28.5
 void Empty(FILE *outfile); //29
+
+/*
+WRITE THIS PSEUDOCODE IN CODE FOR INSTRUCTION TABLE!!!
+Function generate_instruction(op, oprnd)
+//instr_Address shows the current instruction Address that is global
+{
+Instr_table [instr_Address][1] = inst_Address;
+Instr_table [instr_Address][2] = op;
+Instr_table [instr_Address][3] = oprnd;
+Instr_Address++;
+};
+
+WRITE THESE FUNCTIONS FOR SYMBOL TABLE!!!
+You need to write a procedure that will check to see if a particular identifier is already in the
+table, a procedure that will insert into the table and a procedure that will printout all identifiers in
+the table. If an identifier is used without declaring it, then the parser should provide an error
+message. Also, if an identifier is already in the table and wants to declare it for the second time,
+then the parser should provide an error message. Also, you should check the type match.
+
+*/
 
 
 //RULE 1: <Rat24S> -> $ <Opt Function Definitions> $ <Opt Declaration List> $ <Statement List> $
