@@ -1,0 +1,59 @@
+$
+	[*Basic Functions*]
+	function sum (a integer, b integer, c integer)
+	{
+		return a + b + c;
+	}
+	
+	function average (apple integer, banana integer, cactus integer)
+		integer count;
+	{
+		count = 3;
+		return sum(apple, banana, cactus)/count;
+	}
+	
+	function multiply (a real, b real)
+	{
+		return a * b;
+	}
+	
+	function exponential (base real, exponent real)
+		real product;
+	{
+		product = 1;
+		if (exponent==0) return 1; endif
+
+		if (exponent => 1)
+			{
+				while(exponent=>1)
+				{
+				product=product*base;
+				exponent=exponent-1;
+				}endwhile
+			return product;
+			} endif
+			
+		if (exponent <= -1)
+			{
+				while(exponent => 1)
+				{
+				product=product/base;
+				exponent=exponent+1;
+				}endwhile
+			return product;
+			} endif
+			
+		return 0;
+	}
+$
+	[*Basic Variables*]
+	integer num1, num2, num3;
+	real num_avg;
+$
+	[* Testing Basic Program*]
+	scan (num1, num2, num3);
+	num_avg = average (num1, num2, num3);
+	print (num_avg);
+	
+	print (exponential(num1, num2));
+$
