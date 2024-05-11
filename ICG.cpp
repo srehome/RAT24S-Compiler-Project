@@ -5,6 +5,7 @@
 //CONSTANTS
 std::pair<string, string> LexemeTokenPair;
 const bool PrintRules = true;
+const bool PrintAssembly = false;
 int line = 1;
 int& lineNumber = line;
 int memory_address = 5000;
@@ -50,25 +51,44 @@ void Primary_(ifstream& codefile, FILE *outfile); //28.5
 void Empty(FILE *outfile); //29
 
 /*
-WRITE THIS PSEUDOCODE IN CODE FOR INSTRUCTION TABLE!!!
-Function generate_instruction(op, oprnd)
-//instr_Address shows the current instruction Address that is global
-{
-Instr_table [instr_Address][1] = inst_Address;
-Instr_table [instr_Address][2] = op;
-Instr_table [instr_Address][3] = oprnd;
-Instr_Address++;
-};
 
-WRITE THESE FUNCTIONS FOR SYMBOL TABLE!!!
-You need to write a procedure that will check to see if a particular identifier is already in the
-table, a procedure that will insert into the table and a procedure that will printout all identifiers in
-the table. If an identifier is used without declaring it, then the parser should provide an error
+If an identifier is used without declaring it, then the parser should provide an error
 message. Also, if an identifier is already in the table and wants to declare it for the second time,
 then the parser should provide an error message. Also, you should check the type match.
 
 */
 
+void generate_instruction(string op, string oprnd) {
+    instr_table[instr_address-1][0] = instr_address;
+    instr_table[instr_address-1][1] = op;
+    instr_table[instr_address-1][2] = oprnd;
+    instr_address++;
+}
+
+bool isInSymbolTable(string id) {
+    for(int i = 0; i < (memory_address-5000); i++) {
+        if(id == symbol_table[i][0])
+            return true;
+    }
+    return false;
+}
+
+void insertIntoSymbolTable(string id, string type) {
+    symbol_table[memory_address-5000][0] = id;
+    symbol_table[memory_address-5000][1] = memory_address;
+    symbol_table[memory_address-5000][2] = type;
+    memory_address++;
+}
+
+//THIS FUNCTION MAY NEED ADJUSTMENTS
+void printSymbolTable(FILE *outfile) {
+    if (PrintAssembly) {
+        fprintf(outfile, "%25s%17s%s\n", "Identifier", "Memory Location", "Type");
+        for(int i = 0; i < (memory_address-5000); i++) {
+            fprintf(outfile, "%25s%17s%s\n", symbol_table[i][0], symbol_table[i][1], symbol_table[i][2]);
+        }
+    }
+}
 
 //RULE 1: <Rat24S> -> $ <Opt Function Definitions> $ <Opt Declaration List> $ <Statement List> $
 void RAT24S(ifstream& codefile, FILE *outfile) {
