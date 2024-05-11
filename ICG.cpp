@@ -8,6 +8,8 @@ const bool PrintRules = true;
 int line = 1;
 int& lineNumber = line;
 int memory_address = 5000;
+//NOTE: I DON'T THINK WE WILL NEED THESE VECTORS BECAUSE THE INSTRUCTIONS DON"T SAY WE HAVE TO IMPLEMENT THE ASSEMBLY CODE
+//      JUST TO STORE IT IN THE INSTRUCTION TABLE AND PRINT IT AT THE END
 //vector<int> memory;           //store memory values; NOTE memory[MemoryLocation-5000]
 //vector<int> stack;
 string symbol_table[100][3];    //Identifier, MemoryLocation, Type
