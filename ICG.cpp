@@ -33,8 +33,8 @@ void StatementList_(ifstream& codefile, FILE *outfile);
 void Statement(ifstream& codefile, FILE *outfile);
 void Compound(ifstream& codefile, FILE *outfile);
 void Assign(ifstream& codefile, FILE *outfile);                 //done
-void If(ifstream& codefile, FILE *outfile);
-void If_(ifstream& codefile, FILE *outfile);
+void If(ifstream& codefile, FILE *outfile);                     //done
+void If_(ifstream& codefile, FILE *outfile);                    //done
 void Return(ifstream& codefile, FILE *outfile);
 void Return_(ifstream& codefile, FILE *outfile);
 void Print(ifstream& codefile, FILE *outfile);
@@ -387,6 +387,8 @@ void If(ifstream& codefile, FILE *outfile) {
                 LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
                 if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                 Statement(codefile, outfile);
+                backpatch();
+                generate_instruction("LABEL", "nil");
                 If_(codefile, outfile);
             }
             else {
