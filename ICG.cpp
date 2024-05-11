@@ -20,14 +20,14 @@ string instr_table[1000][3];    //Address, Operator (assembly instruction), Oper
 
 //DECLARATIONS
 void RAT24S(ifstream& codefile, FILE *outfile);
-void Qualifier(ifstream& codefile, FILE *outfile);
+string Qualifier(ifstream& codefile, FILE *outfile);            //done
 void Body(ifstream& codefile, FILE *outfile);
-void OptDeclarationList(ifstream& codefile, FILE *outfile);
-void DeclarationList(ifstream& codefile, FILE *outfile);
-void DeclarationList_(ifstream& codefile, FILE *outfile);
-void Declaration(ifstream& codefile, FILE *outfile);
-void IDs(ifstream& codefile, FILE *outfile);
-void IDs_(ifstream& codefile, FILE *outfile);
+void OptDeclarationList(ifstream& codefile, FILE *outfile);     //done
+void DeclarationList(ifstream& codefile, FILE *outfile);        //done
+void DeclarationList_(ifstream& codefile, FILE *outfile);       //done
+void Declaration(ifstream& codefile, FILE *outfile);            //done
+void IDs(ifstream& codefile, FILE *outfile, char declare_scan, string type = "");   //done
+void IDs_(ifstream& codefile, FILE *outfile, char declare_scan, string type);       //done
 void StatementList(ifstream& codefile, FILE *outfile);
 void StatementList_(ifstream& codefile, FILE *outfile);
 void Statement(ifstream& codefile, FILE *outfile);
@@ -38,7 +38,7 @@ void If_(ifstream& codefile, FILE *outfile);                    //done
 void Return(ifstream& codefile, FILE *outfile);
 void Return_(ifstream& codefile, FILE *outfile);
 void Print(ifstream& codefile, FILE *outfile);
-void Scan(ifstream& codefile, FILE *outfile);
+void Scan(ifstream& codefile, FILE *outfile);                   //done
 void While(ifstream& codefile, FILE *outfile);                  //done
 void Condition(ifstream& codefile, FILE *outfile);              //done
 string Relop(ifstream& codefile, FILE *outfile); //24           //done
@@ -47,7 +47,7 @@ void Expression_(ifstream& codefile, FILE *outfile); //25.5     //done
 void Term(ifstream& codefile, FILE *outfile); //26              //done
 void Term_(ifstream& codefile, FILE *outfile); //26.5           //done
 void Factor(ifstream& codefile, FILE *outfile); //27            //done
-void Primary(ifstream& codefile, FILE *outfile); //28           //done
+void Primary(ifstream& codefile, FILE *outfile); //28           //done; may need error messages
 void Empty(FILE *outfile); //29                                 //done
 
 /*
@@ -65,14 +65,6 @@ void generate_instruction(string op, string oprnd) {
     instr_address++;
 }
 
-string get_address(string id) {
-    for(int i = 0; i < (memory_address-5000); i++) {
-        if(id == symbol_table[i][0])
-            return symbol_table[i][1];
-    }
-    return "0";    //if memory location == "0", then identifier was not in symbol table
-}
-
 void backpatch() {
     int jumpAddr = jumpstack.back();
     instr_table[jumpAddr][2] = instr_address;
@@ -80,6 +72,15 @@ void backpatch() {
 }
 
 //Need function to print out assembly code in instr_table
+
+
+string get_address(string id) {
+    for(int i = 0; i < (memory_address-5000); i++) {
+        if(id == symbol_table[i][0])
+            return symbol_table[i][1];
+    }
+    return "0";    //if memory location == "0", then identifier was not in symbol table
+}
 
 void insertIntoSymbolTable(string id, string type) {
     symbol_table[memory_address-5000][0] = id;
@@ -155,11 +156,13 @@ void RAT24S(ifstream& codefile, FILE *outfile) {
 }
 
 //RULE 8: <Qualifier> -> integer | boolean | real
-void Qualifier(ifstream& codefile, FILE *outfile) {
+string Qualifier(ifstream& codefile, FILE *outfile) {
     if(PrintRules) fprintf(outfile, "     <Qualifier> -> integer | boolean\n");
     if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean") {
+        string type = LexemeTokenPair.first;
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        return type;
     }
     else {
         if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing keyword for qualifier\n   Expected: keyword 'integer' or 'boolean'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
@@ -230,19 +233,38 @@ void DeclarationList_(ifstream& codefile, FILE *outfile) {
 void Declaration(ifstream& codefile, FILE *outfile) {
     if(PrintRules) fprintf(outfile, "     <Declaration> -> <Qualifier > <IDs>\n");
     //parse qualifier
-    Qualifier(codefile, outfile);
+    string type = Qualifier(codefile, outfile);
     //parse IDs
-    IDs(codefile, outfile);
+    IDs(codefile, outfile, 'd', type);
 }
 
 //RULE 13: <IDs> -> <Identifier> <IDs'>
-void IDs(ifstream& codefile, FILE *outfile) {
+void IDs(ifstream& codefile, FILE *outfile, char declare_scan, string type = "") {
     if(PrintRules) fprintf(outfile, "     <IDs> -> <Identifier> <IDs'>\n");
     //parse identifier
     if(LexemeTokenPair.second == "identifier"){
+        if(declare_scan == 'd') {
+            if (get_address(LexemeTokenPair.first) != "0")
+                insertIntoSymbolTable(LexemeTokenPair.first, type);
+            else {
+                fprintf(outfile, "Error Line Number %d:\n   Duplicate identifier declared in IDs\n   Received: %s\n", lineNumber, LexemeTokenPair.first.c_str());
+                exit(1);
+            }
+        }
+        else { //if declare_scan == 's'
+            string addr = get_address(LexemeTokenPair.first);
+            if (addr != "0") {
+                generate_instruction("SIN", "nil");
+                generate_instruction("POPM", addr);
+            }
+            else {
+                fprintf(outfile, "Error Line Number %d:\n   Undeclared identifier in IDs\n   Received: %s\n", lineNumber, LexemeTokenPair.first.c_str());
+                exit(1);
+            }
+        }
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-        IDs_(codefile, outfile);
+        IDs_(codefile, outfile, declare_scan, type);
     }
     else {
         if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing identifier in IDs\n   Expected: identifier\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
@@ -251,12 +273,12 @@ void IDs(ifstream& codefile, FILE *outfile) {
 }
 
 //RULE 13.5: <IDs'> -> , <IDs> | <Empty>
-void IDs_(ifstream& codefile, FILE *outfile) {
+void IDs_(ifstream& codefile, FILE *outfile, char declare_scan, string type) {
     if(PrintRules) fprintf(outfile, "     <IDs'> -> , <IDs> | <Empty>\n");
     if(LexemeTokenPair.first == ",") {
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-        IDs(codefile, outfile);
+        IDs(codefile, outfile, declare_scan, type);
     }
     else {
         Empty(outfile);
@@ -516,7 +538,7 @@ void Scan(ifstream& codefile, FILE *outfile) {
         if(LexemeTokenPair.first == "(") {
             LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
             if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-            IDs(codefile, outfile);
+            IDs(codefile, outfile, 's', "");
             if(LexemeTokenPair.first == ")") {
                 LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
                 if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
