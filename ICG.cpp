@@ -79,6 +79,8 @@ void backpatch() {
     jumpstack.pop_back();
 }
 
+//Need function to print out assembly code in instr_table
+
 void insertIntoSymbolTable(string id, string type) {
     symbol_table[memory_address-5000][0] = id;
     symbol_table[memory_address-5000][1] = memory_address;
