@@ -27,16 +27,16 @@ void DeclarationList_(ifstream& codefile, FILE *outfile);       //done
 void Declaration(ifstream& codefile, FILE *outfile);            //done
 void IDs(ifstream& codefile, FILE *outfile, char declare_scan, string type = "");   //done
 void IDs_(ifstream& codefile, FILE *outfile, char declare_scan, string type);       //done
-void StatementList(ifstream& codefile, FILE *outfile);
-void StatementList_(ifstream& codefile, FILE *outfile);
-void Statement(ifstream& codefile, FILE *outfile);
-void Compound(ifstream& codefile, FILE *outfile);
+void StatementList(ifstream& codefile, FILE *outfile);          //done
+void StatementList_(ifstream& codefile, FILE *outfile);         //done
+void Statement(ifstream& codefile, FILE *outfile);              //done
+void Compound(ifstream& codefile, FILE *outfile);               //done
 void Assign(ifstream& codefile, FILE *outfile);                 //done
 void If(ifstream& codefile, FILE *outfile);                     //done
 void If_(ifstream& codefile, FILE *outfile);                    //done
-void Return(ifstream& codefile, FILE *outfile);
-void Return_(ifstream& codefile, FILE *outfile);
-void Print(ifstream& codefile, FILE *outfile);
+void Return(ifstream& codefile, FILE *outfile);                 //done  
+void Return_(ifstream& codefile, FILE *outfile);                //done
+void Print(ifstream& codefile, FILE *outfile);                  //done
 void Scan(ifstream& codefile, FILE *outfile);                   //done
 void While(ifstream& codefile, FILE *outfile);                  //done
 void Condition(ifstream& codefile, FILE *outfile);              //done
@@ -483,6 +483,7 @@ void Print(ifstream& codefile, FILE *outfile) {
                 LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
                 if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                 if(LexemeTokenPair.first == ";") {
+                    generate_instruction("SOUT", "nil");
                     LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
                     if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                 }
