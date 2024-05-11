@@ -13,6 +13,7 @@ int memory_address = 5000;
 //      JUST TO STORE IT IN THE INSTRUCTION TABLE AND PRINT IT AT THE END
 //vector<int> memory;           //store memory values; NOTE memory[MemoryLocation-5000]
 //vector<int> stack;
+vector<int> jumpstack({-1});
 string symbol_table[100][3];    //Identifier, MemoryLocation, Type
 int instr_address = 0;
 string instr_table[1000][3];    //Address, Operator (assembly instruction), Operand (register)
@@ -38,9 +39,9 @@ void Return(ifstream& codefile, FILE *outfile);
 void Return_(ifstream& codefile, FILE *outfile);
 void Print(ifstream& codefile, FILE *outfile);
 void Scan(ifstream& codefile, FILE *outfile);
-void While(ifstream& codefile, FILE *outfile);
-void Condition(ifstream& codefile, FILE *outfile);
-void Relop(ifstream& codefile, FILE *outfile); //24
+void While(ifstream& codefile, FILE *outfile);                  //done
+void Condition(ifstream& codefile, FILE *outfile);              //done
+string Relop(ifstream& codefile, FILE *outfile); //24           //done
 void Expression(ifstream& codefile, FILE *outfile); //25        //done
 void Expression_(ifstream& codefile, FILE *outfile); //25.5     //done
 void Term(ifstream& codefile, FILE *outfile); //26              //done
@@ -70,6 +71,12 @@ string get_address(string id) {
             return symbol_table[i][1];
     }
     return "0";    //if memory location == "0", then identifier was not in symbol table
+}
+
+void backpatch() {
+    int jumpAddr = jumpstack.back();
+    instr_table[jumpAddr][2] = instr_address;
+    jumpstack.pop_back();
 }
 
 void insertIntoSymbolTable(string id, string type) {
@@ -538,6 +545,8 @@ void Scan(ifstream& codefile, FILE *outfile) {
 void While(ifstream& codefile, FILE *outfile) {
     if(PrintRules) fprintf(outfile, "     <While> -> while ( <Condition> ) <Statement> endwhile\n");
     if(LexemeTokenPair.first == "while") {
+        int labelAddress = instr_address;
+        generate_instruction("LABEL", "nil");
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         if(LexemeTokenPair.first == "(") {
@@ -548,6 +557,9 @@ void While(ifstream& codefile, FILE *outfile) {
                 LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
                 if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
                 Statement(codefile, outfile);
+                generate_instruction("JUMP", to_string(labelAddress));
+                backpatch();
+                //backpatch instruction table at op = JUMP0 so oprnd = instr_address
                 if(LexemeTokenPair.first == "endwhile") {
                     LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
                     if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
@@ -579,13 +591,43 @@ void Condition(ifstream& codefile, FILE *outfile) {
     //parse expression
     Expression(codefile, outfile);
     //parse Relop
-    Relop(codefile, outfile);
+    string op = Relop(codefile, outfile);
     //parse expression
     Expression(codefile, outfile);
+    if(op == "<") {
+        generate_instruction("LES", "nil");
+        jumpstack.push_back(instr_address);
+        generate_instruction("JUMP0", "nil");
+    }
+    else if(op == ">") {
+        generate_instruction("GRT", "nil");
+        jumpstack.push_back(instr_address);
+        generate_instruction("JUMP0", "nil");
+    }
+    else if(op == "<=") {
+        generate_instruction("LEQ", "nil");
+        jumpstack.push_back(instr_address);
+        generate_instruction("JUMP0", "nil");
+    }
+    else if(op == "=>") {
+        generate_instruction("GEQ", "nil");
+        jumpstack.push_back(instr_address);
+        generate_instruction("JUMP0", "nil");
+    }
+    else if(op == "==") {
+        generate_instruction("EQU", "nil");
+        jumpstack.push_back(instr_address);
+        generate_instruction("JUMP0", "nil");
+    }
+    else if(op == "!=") {
+        generate_instruction("NEQ", "nil");
+        jumpstack.push_back(instr_address);
+        generate_instruction("JUMP0", "nil");
+    }
 }
 
 //RULE 24: <Relop> -> == |!= | > | < | <= | =>
-void Relop(ifstream& codefile, FILE *outfile) {
+string Relop(ifstream& codefile, FILE *outfile) {
     if(PrintRules) fprintf(outfile, "     <Relop> -> == |!= | > | < | <= | =>\n");
     if(LexemeTokenPair.first == "==" ||
         LexemeTokenPair.first == "!=" ||
@@ -593,8 +635,10 @@ void Relop(ifstream& codefile, FILE *outfile) {
         LexemeTokenPair.first == "<" ||
         LexemeTokenPair.first == "<=" ||
         LexemeTokenPair.first == "=>") {
+            string op = LexemeTokenPair.first;
             LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
             if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+            return op;
     }
     else {
         if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Wrong token for relop\n   Expected: operator ==,!=, >, <, <=, or =>\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
