@@ -10,14 +10,6 @@ int& lineNumber = line;
 
 //DECLARATIONS
 void RAT24S(ifstream& codefile, FILE *outfile);
-void OptFunctionDefinitions(ifstream& codefile, FILE *outfile);
-void FunctionDefinitions(ifstream& codefile, FILE *outfile);
-void FunctionDefinitionsPrime(ifstream& codefile, FILE *outfile);
-void Function(ifstream& codefile, FILE *outfile);
-void OptParameterList(ifstream& codefile, FILE *outfile);
-void ParameterList(ifstream& codefile, FILE *outfile);
-void ParameterList_(ifstream& codefile, FILE *outfile);
-void Parameter(ifstream& codefile, FILE *outfile);
 void Qualifier(ifstream& codefile, FILE *outfile);
 void Body(ifstream& codefile, FILE *outfile);
 void OptDeclarationList(ifstream& codefile, FILE *outfile);
@@ -62,7 +54,6 @@ void RAT24S(ifstream& codefile, FILE *outfile) {
     if(LexemeTokenPair.first == "$") {
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-        OptFunctionDefinitions(codefile, outfile);
     }
     else {
         if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator before Optional Function Definitions\n   Expected: separator '$'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
@@ -105,121 +96,6 @@ void RAT24S(ifstream& codefile, FILE *outfile) {
         if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after Statement List\n   Expected: separator '$'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
-}
-
-//RULE 2: <Opt Function Definitions> -> <Function Definitions> | <Empty>
-void OptFunctionDefinitions(ifstream& codefile, FILE *outfile) {
-    if(PrintRules) fprintf(outfile, "     <Opt Function Definitions> -> <Function Definitions> | <Empty>\n");
-    if(LexemeTokenPair.first == "function") {
-        FunctionDefinitions(codefile, outfile);
-    }
-    else {
-        Empty(outfile);
-    }
-}
-
-//RULE 3: <Function Definitions> -> <Function> <Function Definitions'>
-void FunctionDefinitions(ifstream& codefile, FILE *outfile) {
-    if(PrintRules) fprintf(outfile, "     <Function Definitions> -> <Function> <Function Definitions'>\n");
-    Function(codefile, outfile);
-    FunctionDefinitionsPrime(codefile, outfile);
-}
-
-//RULE 3.5: <Function Definitions'> -> <Function Definitions> | <Empty>
-void FunctionDefinitionsPrime(ifstream& codefile, FILE *outfile) {
-    if(PrintRules) fprintf(outfile, "     <Function Definitions'> -> <Function Definitions> | <Empty>\n");
-    if(LexemeTokenPair.first == "function") {
-        FunctionDefinitions(codefile, outfile);
-    }
-    else {
-        Empty(outfile);
-    }
-}
-
-//RULE 4: <Function> -> function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>
-void Function(ifstream& codefile, FILE *outfile) {
-    if(PrintRules) fprintf(outfile, "     <Function> -> function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>\n");
-    //check for "function" keyword
-    if(LexemeTokenPair.first == "function") {
-        LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
-        if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-        //parse identifier
-        if(LexemeTokenPair.second == "identifier"){
-            LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
-            fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-
-            //check for "("
-            if(LexemeTokenPair.first == "(") {
-                LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
-                if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-                //parse optional parameter list
-                OptParameterList(codefile, outfile);
-                //check for ")"
-                if(LexemeTokenPair.first == ")") {
-                    LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
-                    if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-                    //parse optional declaration list
-                    OptDeclarationList(codefile, outfile);
-                    //parse body
-                    Body(codefile, outfile);
-                }
-                else {
-                    if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after function Optional Parameter List\n   Expected: separator ')'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-                    exit(1);
-                }
-            }
-            else {
-                if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator before function Optional Parameter List\n   Expected: separator '('\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-                exit(1);
-            }
-        }
-        else {
-            if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing identifier for function\n   Expected: identifier\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-            exit(1);
-        }
-    }
-    else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing keyword to begin function\n   Expected: keyword 'function'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-        exit(1);
-    }
-}
-
-//RULE 5: <Opt Parameter List> -> <Parameter List> | <Empty>
-void OptParameterList(ifstream& codefile, FILE *outfile) {
-    if(PrintRules) fprintf(outfile, "     <Opt Parameter List> -> <Parameter List> | <Empty>\n");
-    if(LexemeTokenPair.second == "identifier") {
-        ParameterList(codefile, outfile);
-    }
-    else {
-        Empty(outfile);
-    }
-}
-
-//RULE 6: <Parameter List> -> <Parameter> <Parameter List'>
-void ParameterList(ifstream& codefile, FILE *outfile) {
-    if(PrintRules) fprintf(outfile, "     <Parameter List> -> <Parameter> <Parameter List'>\n");
-    Parameter(codefile, outfile);
-    ParameterList_(codefile, outfile);
-}
-
-//RULE 6.5: <Parameter List'> ->, <Parameter List> | <Empty>
-void ParameterList_(ifstream& codefile, FILE *outfile) {
-    if(PrintRules) fprintf(outfile, "     <Parameter List'> -> , <Parameter List> | <Empty>\n");
-    if(LexemeTokenPair.first == ",") {
-        LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
-        if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-        ParameterList(codefile, outfile);
-    }
-    else {
-        Empty(outfile);
-    }
-}
-
-//RULE 7: <Parameter> -> <IDs> <Qualifier>
-void Parameter(ifstream& codefile, FILE *outfile) {
-    if(PrintRules) fprintf(outfile, "     <Parameter> -> <IDs> <Qualifier>\n");
-    IDs(codefile, outfile);
-    Qualifier(codefile, outfile);
 }
 
 //RULE 8: <Qualifier> -> integer | boolean | real
