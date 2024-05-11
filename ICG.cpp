@@ -100,13 +100,13 @@ void RAT24S(ifstream& codefile, FILE *outfile) {
 
 //RULE 8: <Qualifier> -> integer | boolean | real
 void Qualifier(ifstream& codefile, FILE *outfile) {
-    if(PrintRules) fprintf(outfile, "     <Qualifier> -> integer | boolean | real\n");
-    if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean" || LexemeTokenPair.first == "real") {
+    if(PrintRules) fprintf(outfile, "     <Qualifier> -> integer | boolean\n");
+    if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean") {
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
     }
     else {
-        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing keyword for qualifier\n   Expected: keyword 'integer', 'boolean', or 'real'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing keyword for qualifier\n   Expected: keyword 'integer' or 'boolean'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
 }
@@ -135,7 +135,7 @@ void Body(ifstream& codefile, FILE *outfile) {
 //RULE 10: <Opt Declaration List> -> <Declaration List> | <Empty>
 void OptDeclarationList(ifstream& codefile, FILE *outfile) {
     if(PrintRules) fprintf(outfile, "     <Opt Declaration List> -> <Declaration List> | <Empty>\n");
-    if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean" || LexemeTokenPair.first == "real") {
+    if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean") {
         DeclarationList(codefile, outfile);
     }
     else {
@@ -162,7 +162,7 @@ void DeclarationList(ifstream& codefile, FILE *outfile) {
 //RULE 11.5: <Declaration List'> -> <Declaration List> | <Empty>
 void DeclarationList_(ifstream& codefile, FILE *outfile) {
     if(PrintRules) fprintf(outfile, "     <Declaration List'> -> <Declaration List> | <Empty>\n");
-    if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean" || LexemeTokenPair.first == "real") {
+    if(LexemeTokenPair.first == "integer" || LexemeTokenPair.first == "boolean") {
         DeclarationList(codefile, outfile);
     }
     else {
