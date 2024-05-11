@@ -65,12 +65,12 @@ void generate_instruction(string op, string oprnd) {
     instr_address++;
 }
 
-bool isInSymbolTable(string id) {
+string get_address(string id) {
     for(int i = 0; i < (memory_address-5000); i++) {
         if(id == symbol_table[i][0])
-            return true;
+            return symbol_table[i][1];
     }
-    return false;
+    return "0";    //if memory location == "0", then identifier was not in symbol table
 }
 
 void insertIntoSymbolTable(string id, string type) {
