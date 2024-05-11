@@ -21,7 +21,6 @@ string instr_table[1000][3];    //Address, Operator (assembly instruction), Oper
 //DECLARATIONS
 void RAT24S(ifstream& codefile, FILE *outfile);
 string Qualifier(ifstream& codefile, FILE *outfile);            //done
-void Body(ifstream& codefile, FILE *outfile);
 void OptDeclarationList(ifstream& codefile, FILE *outfile);     //done
 void DeclarationList(ifstream& codefile, FILE *outfile);        //done
 void DeclarationList_(ifstream& codefile, FILE *outfile);       //done
@@ -167,27 +166,6 @@ string Qualifier(ifstream& codefile, FILE *outfile) {
     else {
         if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing keyword for qualifier\n   Expected: keyword 'integer' or 'boolean'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
-    }
-}
-
-//RULE 9: <Body> -> { < Statement List> }
-void Body(ifstream& codefile, FILE *outfile) {
-    if(PrintRules) fprintf(outfile, "     <Body> -> { < Statement List> }\n");
-    //check for "{"
-    if(LexemeTokenPair.first == "{") {
-        LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
-        if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-        //parse statement list
-        StatementList(codefile, outfile);
-        //check for "}"
-        if(LexemeTokenPair.first == "}") {
-            LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
-            if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-        }
-        else {
-            if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after function body\n   Expected: separator '}'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
-            exit(1);
-        }
     }
 }
 
