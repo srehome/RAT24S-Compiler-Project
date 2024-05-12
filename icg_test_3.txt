@@ -1,0 +1,46 @@
+$	
+
+$
+	[*Basic Variables*]
+	integer num1, num2, num3;
+	integer sum, product;
+	integer num_avg, base, exponent, exponential;
+$
+	[* Testing Addition and Average*]
+	scan (num1, num2, num3);
+	sum = num1 + num2 + num3;
+	print (sum);
+	
+	average = sum / 3;
+	print (average);
+	
+	
+	[*Testing Product and Exponential*]
+	product = num1 * num2 * num3;
+	print(product);
+	
+	exponential = 1;
+	base = num1;
+	exponent = num2;
+	
+	if (exponent==0)
+		exponential = 1;
+		else if (exponent => 1)
+			{
+				while(exponent=>1)
+				{
+				exponential=exponential*base;
+				exponent=exponent-1;
+				}endwhile
+			}
+			else if (exponent <= -1)
+				{
+					while(exponent => 1)
+					{
+					exponential=exponential/base;
+					exponent=exponent+1;
+					}endwhile
+				} endif
+			
+	print (exponential);
+$
