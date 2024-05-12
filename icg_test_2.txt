@@ -5,7 +5,7 @@ $
 	integer tupac;
 	boolean boohoo;
 	integer fan1, fan_2, fan3_;
-	integer theRealest, alsoTupac, eminem;
+	boolean theRealest, alsoTupac, eminem;
 	boolean booyou,boomee,boothee;
 $
 	scan (boohoo, eminem);
@@ -21,7 +21,7 @@ $
 			theRealest = false;
 		}
 		else
-			alsoTupac = -false;
+			alsoTupac = false;
 		endif
 	endif
 $
