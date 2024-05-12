@@ -1,0 +1,51 @@
+____________
+SYMBOL TABLE
+____________
+Identifier                Memory Location   Type     
+numba                     5000              integer  
+tupac                     5001              integer  
+boohoo                    5002              boolean  
+theRealest                5003              boolean  
+alsoTupac                 5004              boolean  
+eminem                    5005              integer  
+booyou                    5006              boolean  
+boomee                    5007              boolean  
+boothee                   5008              boolean  
+______________
+ASSEMBLY CODE
+______________
+Address   Operator  Operand  
+1         SIN                
+2         POPM      5002     
+3         SIN                
+4         POPM      5005     
+5         PUSHM     5002     
+6         PUSHI     1        
+7         EQU                
+8         JUMP0     13       
+9         PUSHI     -1       
+10        PUSHI     1        
+11        M                  
+12        POPM      5001     
+13        LABEL              
+14        PUSHM     5001     
+15        PUSHI     -1       
+16        PUSHI     1        
+17        M                  
+18        EQU                
+19        JUMP0     33       
+20        PUSHM     5006     
+21        PUSHI     1        
+22        EQU                
+23        JUMP0     30       
+24        PUSHM     5001     
+25        PUSHI     3        
+26        A                  
+27        POPM      5001     
+28        PUSHI     0        
+29        POPM      5003     
+30        LABEL              
+31        PUSHI     0        
+32        POPM      5004     
+33        LABEL              
+                             

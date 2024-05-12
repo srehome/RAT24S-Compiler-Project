@@ -1,0 +1,57 @@
+____________
+SYMBOL TABLE
+____________
+Identifier                Memory Location   Type     
+sally                     5000              integer  
+beach                     5001              integer  
+bob                       5002              integer  
+abc1                      5003              integer  
+tester                    5004              integer  
+j_1                       5005              integer  
+billy                     5006              boolean  
+joe                       5007              boolean  
+______________
+ASSEMBLY CODE
+______________
+Address   Operator  Operand  
+1         PUSHM     5001     
+2         PUSHM     5002     
+3         M                  
+4         POPM      5000     
+5         PUSHM     5000     
+6         PUSHI     3        
+7         A                  
+8         PUSHM     5003     
+9         D                  
+10        POPM      5004     
+11        LABEL              
+12        PUSHM     5006     
+13        PUSHI     1        
+14        EQU                
+15        JUMP0     31       
+16        SIN                
+17        POPM      5006     
+18        SIN                
+19        POPM      5002     
+20        SIN                
+21        POPM      5007     
+22        PUSHM     5005     
+23        PUSHI     1        
+24        A                  
+25        POPM      5005     
+26        PUSHM     5005     
+27        SOUT               
+28        PUSHI     1        
+29        SOUT               
+30        JUMP      11       
+31        PUSHI     5        
+32        PUSHI     -1       
+33        PUSHI     10       
+34        M                  
+35        A                  
+36        PUSHI     -1       
+37        PUSHM     5000     
+38        M                  
+39        A                  
+40        POPM      5002     
+                             

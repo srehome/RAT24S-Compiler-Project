@@ -1,23 +1,16 @@
 $
-
 $
 integer sally, beach, bob, abc1, tester, j_1;
 boolean billy, joe;
 $
 sally = beach * bob;
 tester = (sally + 3) / abc1;
-
-{
-while (billy == 10)
-	{
+while (billy == true) {
 		scan (billy, bob, joe);
 		j_1 = j_1 + 1;
 		print (j_1);
 		print (true);
-	}
-endwhile
-
+} endwhile
 bob = 5 + -10 + - sally;
-}
 return;
 $

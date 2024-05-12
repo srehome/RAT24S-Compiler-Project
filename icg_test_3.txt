@@ -11,8 +11,8 @@ $
 	sum = num1 + num2 + num3;
 	print (sum);
 	
-	average = sum / 3;
-	print (average);
+	num_avg = sum / 3;
+	print (num_avg);
 	
 	
 	[*Testing Product and Exponential*]
@@ -25,22 +25,26 @@ $
 	
 	if (exponent==0)
 		exponential = 1;
-		else if (exponent => 1)
+	else 
+		if (exponent => 1)
+		{
+			while(exponent=>1)
 			{
-				while(exponent=>1)
+			exponential=exponential*base;
+			exponent=exponent-1;
+			}endwhile
+		}
+		else
+			if (exponent <= -1)
+			{
+				while(exponent => 1)
 				{
-				exponential=exponential*base;
-				exponent=exponent-1;
+				exponential=exponential/base;
+				exponent=exponent+1;
 				}endwhile
-			}
-			else if (exponent <= -1)
-				{
-					while(exponent => 1)
-					{
-					exponential=exponential/base;
-					exponent=exponent+1;
-					}endwhile
-				} endif
-			
+			} endif
+		endif
+	endif
+		
 	print (exponential);
 $

@@ -1,0 +1,101 @@
+____________
+SYMBOL TABLE
+____________
+Identifier                Memory Location   Type     
+num1                      5000              integer  
+num2                      5001              integer  
+num3                      5002              integer  
+sum                       5003              integer  
+product                   5004              integer  
+num_avg                   5005              integer  
+base                      5006              integer  
+exponent                  5007              integer  
+exponential               5008              integer  
+______________
+ASSEMBLY CODE
+______________
+Address   Operator  Operand  
+1         SIN                
+2         POPM      5000     
+3         SIN                
+4         POPM      5001     
+5         SIN                
+6         POPM      5002     
+7         PUSHM     5000     
+8         PUSHM     5001     
+9         A                  
+10        PUSHM     5002     
+11        A                  
+12        POPM      5003     
+13        PUSHM     5003     
+14        SOUT               
+15        PUSHM     5003     
+16        PUSHI     3        
+17        D                  
+18        POPM      5005     
+19        PUSHM     5005     
+20        SOUT               
+21        PUSHM     5000     
+22        PUSHM     5001     
+23        M                  
+24        PUSHM     5002     
+25        M                  
+26        POPM      5004     
+27        PUSHM     5004     
+28        SOUT               
+29        PUSHI     1        
+30        POPM      5008     
+31        PUSHM     5000     
+32        POPM      5006     
+33        PUSHM     5001     
+34        POPM      5007     
+35        PUSHM     5007     
+36        PUSHI     0        
+37        EQU                
+38        JUMP0     41       
+39        PUSHI     1        
+40        POPM      5008     
+41        LABEL              
+42        PUSHM     5007     
+43        PUSHI     1        
+44        GEQ                
+45        JUMP0     60       
+46        LABEL              
+47        PUSHM     5007     
+48        PUSHI     1        
+49        GEQ                
+50        JUMP0     60       
+51        PUSHM     5008     
+52        PUSHM     5006     
+53        M                  
+54        POPM      5008     
+55        PUSHM     5007     
+56        PUSHI     1        
+57        S                  
+58        POPM      5007     
+59        JUMP      46       
+60        LABEL              
+61        PUSHM     5007     
+62        PUSHI     -1       
+63        PUSHI     1        
+64        M                  
+65        LEQ                
+66        JUMP0     81       
+67        LABEL              
+68        PUSHM     5007     
+69        PUSHI     1        
+70        GEQ                
+71        JUMP0     81       
+72        PUSHM     5008     
+73        PUSHM     5006     
+74        D                  
+75        POPM      5008     
+76        PUSHM     5007     
+77        PUSHI     1        
+78        A                  
+79        POPM      5007     
+80        JUMP      67       
+81        LABEL              
+82        PUSHM     5008     
+83        SOUT               
+                             
