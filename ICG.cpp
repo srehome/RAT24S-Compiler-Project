@@ -4,7 +4,7 @@
 
 //CONSTANTS
 std::pair<string, string> LexemeTokenPair;
-const bool PrintRules = true;
+const bool PrintRules = false;
 const bool PrintAssembly = true;
 int line = 1;
 int& lineNumber = line;
@@ -122,7 +122,7 @@ void RAT24S(ifstream& codefile, FILE *outfile) {
     //check second $, call OptDecList, else print error
     if(LexemeTokenPair.first == "$") {
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
-        fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         OptDeclarationList(codefile, outfile);
     }
     else {
@@ -133,7 +133,7 @@ void RAT24S(ifstream& codefile, FILE *outfile) {
     //check third $, call StateList, else print error
     if(LexemeTokenPair.first == "$") {
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
-        fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         StatementList(codefile, outfile);
     }
     else {
@@ -611,11 +611,15 @@ void While(ifstream& codefile, FILE *outfile) {
 void Condition(ifstream& codefile, FILE *outfile) {
     if(PrintRules) fprintf(outfile, "     <Condition> -> <Expression> <Relop> <Expression>\n");
     //parse expression
-    Expression(codefile, outfile);
+    string type1 = Expression(codefile, outfile);
     //parse Relop
     string op = Relop(codefile, outfile);
     //parse expression
-    Expression(codefile, outfile);
+    string type2 = Expression(codefile, outfile);
+    if (type1 != type2) {
+        fprintf(outfile, "Error Line Number %d:\n   Expression types do not match for comparison\n", lineNumber);
+        exit(1);
+    }
     if(op == "<") {
         generate_instruction("LES", "nil");
         jumpstack.push_back(instr_address);
