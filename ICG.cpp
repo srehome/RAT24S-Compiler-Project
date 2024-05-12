@@ -141,6 +141,9 @@ void RAT24S(ifstream& codefile, FILE *outfile) {
         if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after Statement List\n   Expected: separator '$'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         exit(1);
     }
+
+    printSymbolTable(outfile);
+    //print Assembly Function call goes here
 }
 
 //RULE 8: <Qualifier> -> integer | boolean | real
