@@ -21,7 +21,7 @@ void OptDeclarationList(ifstream& codefile, FILE *outfile);     //done
 void DeclarationList(ifstream& codefile, FILE *outfile);        //done
 void DeclarationList_(ifstream& codefile, FILE *outfile);       //done
 void Declaration(ifstream& codefile, FILE *outfile);            //done
-void IDs(ifstream& codefile, FILE *outfile, char declare_scan, string type = "");   //done
+void IDs(ifstream& codefile, FILE *outfile, char declare_scan, string type);   //done
 void IDs_(ifstream& codefile, FILE *outfile, char declare_scan, string type);       //done
 void StatementList(ifstream& codefile, FILE *outfile);          //done
 void StatementList_(ifstream& codefile, FILE *outfile);         //done
@@ -221,7 +221,7 @@ void Declaration(ifstream& codefile, FILE *outfile) {
 }
 
 //RULE 13: <IDs> -> <Identifier> <IDs'>
-void IDs(ifstream& codefile, FILE *outfile, char declare_scan, string type = "") {
+void IDs(ifstream& codefile, FILE *outfile, char declare_scan, string type) {
     if(PrintRules) fprintf(outfile, "     <IDs> -> <Identifier> <IDs'>\n");
     //parse identifier
     if(LexemeTokenPair.second == "identifier"){
