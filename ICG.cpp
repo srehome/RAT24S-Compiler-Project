@@ -47,7 +47,7 @@ void Empty(FILE *outfile);                                      //done
 
 
 void generate_instruction(string op, string oprnd) {
-    instr_table[instr_address-1][0] = instr_address;
+    instr_table[instr_address-1][0] = to_string(instr_address);
     instr_table[instr_address-1][1] = op;
     instr_table[instr_address-1][2] = oprnd;
     instr_address++;
@@ -64,6 +64,7 @@ void printAssemblyCode(FILE *outfile)
 {
     if (PrintAssembly)
     {
+        fprintf(outfile, "______________\nASSEMBLY CODE\n______________\n");
         fprintf(outfile, "%-9s %-9s %-9s\n", "Address", "Operator", "Operand");
         for (int i = 0; i < (instr_address); i++)
         {
@@ -92,9 +93,10 @@ void insertIntoSymbolTable(string id, string type) {
 
 void printSymbolTable(FILE *outfile) {
     if (PrintAssembly) {
-        fprintf(outfile, "%25s%17s%s\n", "Identifier", "Memory Location", "Type");
+        fprintf(outfile, "____________\nSYMBOL TABLE\n____________\n");
+        fprintf(outfile, "%-25s %-17s %-9s\n", "Identifier", "Memory Location", "Type");
         for(int i = 0; i < (memory_address-5000); i++) {
-            fprintf(outfile, "%25s%17s%s\n", symbol_table[i][0], symbol_table[i][1], symbol_table[i][2]);
+            fprintf(outfile, "%-25s %-17s %-9s\n", symbol_table[i][0].c_str(), symbol_table[i][1].c_str(), symbol_table[i][2].c_str());
         }
     }
 }
