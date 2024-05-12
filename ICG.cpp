@@ -9,10 +9,6 @@ const bool PrintAssembly = false;
 int line = 1;
 int& lineNumber = line;
 int memory_address = 5000;
-//NOTE: I DON'T THINK WE WILL NEED THESE VECTORS BECAUSE THE INSTRUCTIONS DON"T SAY WE HAVE TO IMPLEMENT THE ASSEMBLY CODE
-//      JUST TO STORE IT IN THE INSTRUCTION TABLE AND PRINT IT AT THE END
-//vector<int> memory;           //store memory values; NOTE memory[MemoryLocation-5000]
-//vector<int> stack;
 vector<int> jumpstack({-1});
 string symbol_table[100][3];    //Identifier, MemoryLocation, Type
 int instr_address = 0;
@@ -40,22 +36,15 @@ void Print(ifstream& codefile, FILE *outfile);                  //done
 void Scan(ifstream& codefile, FILE *outfile);                   //done
 void While(ifstream& codefile, FILE *outfile);                  //done
 void Condition(ifstream& codefile, FILE *outfile);              //done
-string Relop(ifstream& codefile, FILE *outfile); //24           //done
-void Expression(ifstream& codefile, FILE *outfile); //25        //done
-void Expression_(ifstream& codefile, FILE *outfile); //25.5     //done
-void Term(ifstream& codefile, FILE *outfile); //26              //done
-void Term_(ifstream& codefile, FILE *outfile); //26.5           //done
-void Factor(ifstream& codefile, FILE *outfile); //27            //done
-void Primary(ifstream& codefile, FILE *outfile); //28           //done; may need error messages
-void Empty(FILE *outfile); //29                                 //done
+string Relop(ifstream& codefile, FILE *outfile);                //done
+string Expression(ifstream& codefile, FILE *outfile);           //done
+void Expression_(ifstream& codefile, FILE *outfile, string prevType);    //done
+string Term(ifstream& codefile, FILE *outfile);                 //done
+void Term_(ifstream& codefile, FILE *outfile, string prevType); //done
+string Factor(ifstream& codefile, FILE *outfile);               //done
+string Primary(ifstream& codefile, FILE *outfile);              //done
+void Empty(FILE *outfile);                                      //done
 
-/*
-
-If an identifier is used without declaring it, then the parser should provide an error
-message. Also, if an identifier is already in the table and wants to declare it for the second time,
-then the parser should provide an error message. Also, you should check the type match.
-
-*/
 
 void generate_instruction(string op, string oprnd) {
     instr_table[instr_address-1][0] = instr_address;
@@ -355,8 +344,21 @@ void Assign(ifstream& codefile, FILE *outfile) {
             LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
             if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             //parse expression
-            Expression(codefile, outfile);
-            generate_instruction("POPM", get_address(save));
+            string type = Expression(codefile, outfile);
+            string addr = get_address(save);
+            if (addr != "0") {
+                string memtype = symbol_table[stoi(get_address(save))-5000][2];
+                if(memtype == type)     //check if the identifier type matches the expression type
+                    generate_instruction("POPM", addr);
+                else {
+                    fprintf(outfile, "Error Line Number %d:\n   Identifier type does not match expression type for assignment\n", lineNumber);
+                    exit(1);
+                }
+            }
+            else {
+                fprintf(outfile, "Error Line Number %d:\n   Undeclared identifier in Assign\n   Received: %s\n", lineNumber, LexemeTokenPair.first.c_str());
+                exit(1);
+            }
             //check for ";"
             if(LexemeTokenPair.first == ";") {
                 LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
@@ -652,34 +654,51 @@ string Relop(ifstream& codefile, FILE *outfile) {
 }
 
 //RULE 25: <Expression> -> <Term> <Expression'>
-void Expression(ifstream& codefile, FILE *outfile) {
+string Expression(ifstream& codefile, FILE *outfile) {
     if(PrintRules) fprintf(outfile, "     <Expression> -> <Term> <Expression'>\n");
     //parse term
-    Term(codefile, outfile);
+    string type = Term(codefile, outfile);
     //parse Expression'
-    Expression_(codefile, outfile);
+    Expression_(codefile, outfile, type);
+    return type;
 }
 
 //RULE 25.5: <Expression'> -> + <Term> <Expression'> | - <Term> <Expression'> | <Empty>
-void Expression_(ifstream& codefile, FILE *outfile) {
+void Expression_(ifstream& codefile, FILE *outfile, string prevType) {
     if(PrintRules) fprintf(outfile, "     <Expression'> -> + <Term> <Expression'> | - <Term> <Expression'> | <Empty>\n");
     if(LexemeTokenPair.first == "+") {
+        if(prevType == "boolean") {
+            fprintf(outfile, "Error Line Number %d:\n   Adding boolean\n", lineNumber);
+            exit(1);
+        }
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         //parse term
-        Term(codefile, outfile);
+        string type = Term(codefile, outfile);
+        if(type == "boolean") {
+            fprintf(outfile, "Error Line Number %d:\n   Adding boolean\n", lineNumber);
+            exit(1);
+        }
         generate_instruction("A", "nil");
         //parse Expression'
-        Expression_(codefile, outfile);
+        Expression_(codefile, outfile, type);
     }
     else if(LexemeTokenPair.first == "-") {
+        if(prevType == "boolean") {
+            fprintf(outfile, "Error Line Number %d:\n   Subtracting boolean\n", lineNumber);
+            exit(1);
+        }
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         //parse term
-        Term(codefile, outfile);
+        string type = Term(codefile, outfile);
+        if(type == "boolean") {
+            fprintf(outfile, "Error Line Number %d:\n   Subtracting boolean\n", lineNumber);
+            exit(1);
+        }
         generate_instruction("S", "nil");
         //parse Expression'
-        Expression_(codefile, outfile);
+        Expression_(codefile, outfile, type);
     }
     else {
         Empty(outfile);
@@ -687,34 +706,51 @@ void Expression_(ifstream& codefile, FILE *outfile) {
 }
 
 //RULE 26: <Term> -> <Factor> <Term'>
-void Term(ifstream& codefile, FILE *outfile) {
+string Term(ifstream& codefile, FILE *outfile) {
     if(PrintRules) fprintf(outfile, "     <Term> -> <Factor> <Term'>\n");
     //parse factor
-    Factor(codefile, outfile);
+    string type = Factor(codefile, outfile);
     //parse Term'
-    Term_(codefile, outfile);
+    Term_(codefile, outfile, type);
+    return type;
 }
 
 //RULE 26.5: <Term'> -> * <Factor> <Term'> | / <Factor> <Term'> | <Empty>
-void Term_(ifstream& codefile, FILE *outfile) {
+void Term_(ifstream& codefile, FILE *outfile, string prevType) {
     if(PrintRules) fprintf(outfile, "     <Term'> -> * <Factor> <Term'> | / <Factor> <Term'> | <Empty>\n");
     if(LexemeTokenPair.first == "*") {
+        if(prevType == "boolean") {
+            fprintf(outfile, "Error Line Number %d:\n   Multiplying boolean\n", lineNumber);
+            exit(1);
+        }
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         //parse factor
-        Factor(codefile, outfile);
+        string type = Factor(codefile, outfile);
+        if(type == "boolean") {
+            fprintf(outfile, "Error Line Number %d:\n   Multiplying boolean\n", lineNumber);
+            exit(1);
+        }
         generate_instruction("M", "nil");
         //parse Term'
-        Term_(codefile, outfile);
+        Term_(codefile, outfile, type);
     }
     else if(LexemeTokenPair.first == "/") {
+        if(prevType == "boolean") {
+            fprintf(outfile, "Error Line Number %d:\n   Dividing boolean\n", lineNumber);
+            exit(1);
+        }
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         //parse factor
-        Factor(codefile, outfile);
+        string type = Factor(codefile, outfile);
+        if(type == "boolean") {
+            fprintf(outfile, "Error Line Number %d:\n   Dividing boolean\n", lineNumber);
+            exit(1);
+        }
         generate_instruction("D", "nil");
         //parse Term'
-        Term_(codefile, outfile);
+        Term_(codefile, outfile, type);
     }
     else {
         Empty(outfile);
@@ -722,35 +758,48 @@ void Term_(ifstream& codefile, FILE *outfile) {
 }
 
 //RULE 27: <Factor> -> - <Primary> | <Primary>
-void Factor(ifstream& codefile, FILE *outfile) {
+string Factor(ifstream& codefile, FILE *outfile) {
     if(PrintRules) fprintf(outfile, "     <Factor> -> - <Primary> | <Primary>\n");
     if(LexemeTokenPair.first == "-") {
         generate_instruction("PUSHI", "-1");
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         //parse primary
-        Primary(codefile, outfile);
+        string type = Primary(codefile, outfile);
+        if(type == "boolean") {
+            fprintf(outfile, "Error Line Number %d:\n   Negative boolean\n", lineNumber);
+            exit(1);
+        }
         generate_instruction("M", "nil");
+        return type;
     }
     else {
         //parse primary
-        Primary(codefile, outfile);
+        return Primary(codefile, outfile);
     }
 }
 
-//RULE 28: <Primary> -> <Identifier><Primary'> | <Integer> | ( <Expression> ) | <Real> | true | false
-void Primary(ifstream& codefile, FILE *outfile) {
+//RULE 28: <Primary> -> <Identifier> | <Integer> | ( <Expression> ) | true | false
+string Primary(ifstream& codefile, FILE *outfile) {
     if(PrintRules) fprintf(outfile, "     <Primary> -> <Identifier> | <Integer> | ( <Expression> ) | true | false\n");
     if(LexemeTokenPair.second == "identifier") {
-        generate_instruction("PUSHM", get_address(LexemeTokenPair.first));
+        string addr = get_address(LexemeTokenPair.first);
+        if (addr != "0") {
+            generate_instruction("PUSHM", addr);
+        }
+        else {
+            fprintf(outfile, "Error Line Number %d:\n   Undeclared identifier in Primary\n   Received: %s\n", lineNumber, LexemeTokenPair.first.c_str());
+            exit(1);
+        }
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        return symbol_table[stoi(addr)-5000][2];
     }
     else if(LexemeTokenPair.first == "(") {
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         //parse expression
-        Expression(codefile, outfile);
+        string type = Expression(codefile, outfile);
         if(LexemeTokenPair.first == ")") {
             LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
             if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
@@ -759,21 +808,25 @@ void Primary(ifstream& codefile, FILE *outfile) {
             if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Missing separator after primary expression\n   Expected: separator ')'\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             exit(1);
         }
+        return type;
     }
     else if(LexemeTokenPair.second == "integer") {
         generate_instruction("PUSHI", LexemeTokenPair.first);
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        return "integer";
     }
     else if(LexemeTokenPair.first == "true") {
         generate_instruction("PUSHI", "1");
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        return "boolean";
     }
     else if(LexemeTokenPair.first == "false") {
         generate_instruction("PUSHI", "0");
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
+        return "boolean";
     }
     else {
         if(PrintRules) fprintf(outfile, "Error Line Number %d:\n   Wrong token for primary\n   Expected: identifier, integer, 'true', 'false', or '('\n   Received: %s %s\n", lineNumber, LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
