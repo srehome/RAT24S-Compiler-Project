@@ -12,7 +12,7 @@ $
 	print (sum);
 	
 	num_avg = sum / 3;
-	print(num_avg);
+	print (num_avg);
 	
 	
 	[*Testing Product and Exponential*]
@@ -24,27 +24,31 @@ $
 	exponent = num2;
 	
 	if (exponent==0)
+	{
 		exponential = 1;
-	else 
+	}
+	else
+	{
 		if (exponent => 1)
 		{
 			while(exponent=>1)
 			{
-			exponential=exponential*base;
-			exponent=exponent-1;
+				exponential=exponential*base;
+				exponent=exponent-1;
 			}endwhile
 		}
 		else
+		{
 			if (exponent <= -1)
-			{
-				while(exponent => 1)
 				{
-				exponential=exponential/base;
-				exponent=exponent+1;
-				}endwhile
-			} endif
-		endif
-	endif
-		
+					while(exponent => 1)
+					{
+						exponential=exponential/base;
+						exponent=exponent+1;
+					} endwhile
+				} endif
+		} endif
+	} endif
+	
 	print (exponential);
 $
