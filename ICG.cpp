@@ -5,7 +5,7 @@
 //CONSTANTS
 std::pair<string, string> LexemeTokenPair;
 const bool PrintRules = true;
-const bool PrintAssembly = false;
+const bool PrintAssembly = true;
 int line = 1;
 int& lineNumber = line;
 int memory_address = 5000;
@@ -90,7 +90,6 @@ void insertIntoSymbolTable(string id, string type) {
     memory_address++;
 }
 
-//THIS FUNCTION MAY NEED ADJUSTMENTS
 void printSymbolTable(FILE *outfile) {
     if (PrintAssembly) {
         fprintf(outfile, "%25s%17s%s\n", "Identifier", "Memory Location", "Type");
@@ -156,7 +155,7 @@ void RAT24S(ifstream& codefile, FILE *outfile) {
     }
 
     printSymbolTable(outfile);
-    //print Assembly Function call goes here
+    printAssemblyCode(outfile);
 }
 
 //RULE 8: <Qualifier> -> integer | boolean | real
