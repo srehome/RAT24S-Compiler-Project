@@ -12,7 +12,7 @@ $
 	print (sum);
 	
 	num_avg = sum / 3;
-	print(num_avg);
+	print (num_avg);
 	
 	
 	[*Testing Product and Exponential*]
