@@ -60,7 +60,20 @@ void backpatch() {
 }
 
 //Need function to print out assembly code in instr_table
-
+void printAssemblyCode(FILE *outfile)
+{
+    if (PrintAssembly)
+    {
+        fprintf(outfile, "%-9s %-9s %-9s\n", "Address", "Operator", "Operand");
+        for (int i = 0; i < (instr_address); i++)
+        {
+            if (instr_table[i][2] != "nil")
+                fprintf(outfile, "%-9s %-9s %-9s\n", instr_table[i][0].c_str(), instr_table[i][1].c_str(), instr_table[i][2].c_str());
+            else
+                fprintf(outfile, "%-9s %-9s %-9s\n", instr_table[i][0].c_str(), instr_table[i][1].c_str(), "");
+        }
+    }
+}
 
 string get_address(string id) {
     for(int i = 0; i < (memory_address-5000); i++) {
