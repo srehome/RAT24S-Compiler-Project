@@ -352,6 +352,11 @@ void Assign(ifstream& codefile, FILE *outfile) {
     //parse identifier
     if(LexemeTokenPair.second == "identifier") {
         string save = LexemeTokenPair.first;
+        string addr = get_address(save);
+        if(addr == "0") {
+            fprintf(outfile, "Error Line Number %d:\n   Undeclared identifier in Assign\n   Received: %s\n", lineNumber, save.c_str());
+            exit(1);
+        }
         LexemeTokenPair = lexer(codefile.get(), codefile, lineNumber);
         if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
         //check for "="
@@ -360,18 +365,11 @@ void Assign(ifstream& codefile, FILE *outfile) {
             if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             //parse expression
             string type = Expression(codefile, outfile);
-            string addr = get_address(save);
-            if (addr != "0") {
-                string memtype = symbol_table[stoi(get_address(save))-5000][2];
-                if(memtype == type)     //check if the identifier type matches the expression type
-                    generate_instruction("POPM", addr);
-                else {
-                    fprintf(outfile, "Error Line Number %d:\n   Identifier type does not match expression type for assignment\n", lineNumber);
-                    exit(1);
-                }
-            }
+            string memtype = symbol_table[stoi(get_address(save))-5000][2];
+            if(memtype == type)     //check if the identifier type matches the expression type
+                generate_instruction("POPM", addr);
             else {
-                fprintf(outfile, "Error Line Number %d:\n   Undeclared identifier in Assign\n   Received: %s\n", lineNumber, LexemeTokenPair.first.c_str());
+                fprintf(outfile, "Error Line Number %d:\n   Identifier type does not match expression type for assignment\n", lineNumber);
                 exit(1);
             }
             //check for ";"
