@@ -9,7 +9,7 @@ const bool PrintAssembly = true;
 int line = 1;
 int& lineNumber = line;
 int memory_address = 5000;
-vector<int> jumpstack({-1});
+vector<int> jumpstack;
 string symbol_table[100][3];    //Identifier, MemoryLocation, Type
 int instr_address = 1;
 string instr_table[1000][3];    //Address, Operator (assembly instruction), Operand (register)
@@ -55,7 +55,7 @@ void generate_instruction(string op, string oprnd) {
 
 void backpatch() {
     int jumpAddr = jumpstack.back();
-    instr_table[jumpAddr-1][2] = instr_address;
+    instr_table[jumpAddr-1][2] = to_string(instr_address);
     jumpstack.pop_back();
 }
 
