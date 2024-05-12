@@ -226,7 +226,7 @@ void IDs(ifstream& codefile, FILE *outfile, char declare_scan, string type) {
     //parse identifier
     if(LexemeTokenPair.second == "identifier"){
         if(declare_scan == 'd') {
-            if (get_address(LexemeTokenPair.first) != "0")
+            if (get_address(LexemeTokenPair.first) == "0")
                 insertIntoSymbolTable(LexemeTokenPair.first, type);
             else {
                 fprintf(outfile, "Error Line Number %d:\n   Duplicate identifier declared in IDs\n   Received: %s\n", lineNumber, LexemeTokenPair.first.c_str());
