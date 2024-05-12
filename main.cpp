@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
-#include "SA.cpp"
+#include "ICG.cpp"
 
 int main () {
     std::string filename;
