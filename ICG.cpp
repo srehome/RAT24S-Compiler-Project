@@ -85,7 +85,7 @@ string get_address(string id) {
 
 void insertIntoSymbolTable(string id, string type) {
     symbol_table[memory_address-5000][0] = id;
-    symbol_table[memory_address-5000][1] = memory_address;
+    symbol_table[memory_address-5000][1] = to_string(memory_address);
     symbol_table[memory_address-5000][2] = type;
     memory_address++;
 }
@@ -365,7 +365,7 @@ void Assign(ifstream& codefile, FILE *outfile) {
             if(PrintRules) fprintf(outfile, "Token: %s     Lexeme: %s\n", LexemeTokenPair.second.c_str(), LexemeTokenPair.first.c_str());
             //parse expression
             string type = Expression(codefile, outfile);
-            string memtype = symbol_table[stoi(get_address(save))-5000][2];
+            string memtype = symbol_table[stoi(addr)-5000][2];
             if(memtype == type)     //check if the identifier type matches the expression type
                 generate_instruction("POPM", addr);
             else {
